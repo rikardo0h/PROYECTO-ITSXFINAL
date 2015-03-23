@@ -133,7 +133,7 @@ int main(int argc, char **argv) {
           if(read)      
         {
             memcpy(&message, buffer, 16);
-        	printf("%s %i\n", message.org, message.dest);
+        	printf("%c %c\n", message.org, message.dest);
         }
         
         

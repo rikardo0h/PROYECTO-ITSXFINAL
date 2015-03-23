@@ -16,6 +16,7 @@ struct paquete {
 
 //F U N C I O N E S
 void system_error(char *name);
+paquete token_validacion(char direccion);
 
 
 bool validado=false;
@@ -144,17 +145,13 @@ int main(int argc, char **argv) {
                          OPEN_EXISTING,
                          FILE_ATTRIBUTE_NORMAL,
                          NULL
-                         );			    				    
-            		            		
-					   paquete paq;
-					    
-    
-                        paq.tipo= '1';
-                        strcpy(paq.contenido, "1234");
-                        paq.org= 'a';
-					    paq.dest= 'b';
+                         );
                     
+                        //Creaci—n de token de validaci—n
+            		            		
+                        paquete paq = token_validacion(direccion);
                         memcpy(cBytes, &paq, sizeof(paq));
+                    
     
                         //Envia el paquete
                     
@@ -216,4 +213,17 @@ void system_error(char *name) {
         NULL);
     fprintf(stderr, "\nError %s: %s\n", name, ptr);
     LocalFree(ptr);
+}
+
+//Creaci—n de token de validaci—n
+
+paquete token_validacion(char direccion){
+    
+    paquete paq;
+    paq.tipo= '1';
+    paq.org= direccion;
+    paq.dest= direccion;
+    
+    return paq;
+
 }

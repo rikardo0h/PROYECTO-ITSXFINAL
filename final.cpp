@@ -121,7 +121,7 @@ int main(int argc, char **argv) {
     bool propietario= false; 
 	int ax=0;   
 	char cBytes[16];
-	dar_msg message;
+	dar_msg paq;
     do {
         ////// check for data on port and display it on screen.
         
@@ -135,7 +135,7 @@ int main(int argc, char **argv) {
           if(read)      
         {
             memcpy(&message, buffer, 16);
-        	printf("%s %i\n", message.cName, message.iVida);
+        	printf("%s %i\n", message.org, message.dest);
         }
         
         

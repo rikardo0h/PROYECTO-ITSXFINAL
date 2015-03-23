@@ -121,7 +121,7 @@ int main(int argc, char **argv) {
     bool propietario= false; 
 	int ax=0;   
 	char cBytes[16];
-	dar_msg message;
+	paquete message;
     do {
     	
     	ReadFile( file,
@@ -158,9 +158,9 @@ int main(int argc, char **argv) {
                          NULL
                          );			    				    
             		            		
-					   dar_msg paq;
-					    strcpy(paq.cName, "1234");
-					    paq.iVida=1;
+					   paquete paq;
+					    //strcpy(paq.cName, "1234");
+					    //paq.iVida=1;
 					    //paq.org= 'a';
 					    //paq.dest= 'b';
     

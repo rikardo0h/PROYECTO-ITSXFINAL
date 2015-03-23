@@ -257,6 +257,7 @@ int main(int argc, char **argv) {
             		break;
             	default: 
             	{
+                    return 1;
                		break;
             	}
 			}                        

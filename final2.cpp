@@ -136,7 +136,7 @@ int main(int argc, char **argv) {
           if(read)      
         {
             memcpy(&message, buffer, 16);
-        	printf("%c %c \n", message.org, message.dest);
+            printf("%c %s %c %c \n", message.tipo , message.contenido ,message.org, message.dest);
         }
         
         // check for data on port and display it on screen.

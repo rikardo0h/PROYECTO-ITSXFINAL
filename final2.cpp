@@ -161,8 +161,8 @@ int main(int argc, char **argv) {
 					   paquete paq;
 					    //strcpy(paq.cName, "1234");
 					    //paq.iVida=1;
-					    //paq.org= 'a';
-					    //paq.dest= 'b';
+					    paq.org= 'a';
+					    paq.dest= 'b';
     
 				//	ax = reservar_paquete(paq);
 					

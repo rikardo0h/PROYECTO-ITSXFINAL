@@ -150,7 +150,7 @@ int main(int argc, char **argv) {
                         //Creaci—n de token de validaci—n
             		            		
                         paquete paq;
-                        token_validacion(&paq ,'a');
+                        token_validacion(paq ,'a');
                     
                         memcpy(cBytes, &paq, sizeof(paq));
                     

@@ -183,39 +183,9 @@ int main(int argc, char **argv) {
             		printf("Token descubrimiento \n");
             		//int direc = get_Direccion();
             		//printf("Direc %c \n",get_Direccion());
-					            		            				
-					file2 = CreateFile(port_name2,
-				         GENERIC_WRITE ,
-				        0, 
-				        NULL, 
-				        OPEN_EXISTING,
-				        0,
-				        NULL);				    				    
-																																												
-					ch='*';					
-					WriteFile(file2, &ch, 1, &written2, NULL);
-					ch='2';					
-					WriteFile(file2, &ch, 1, &written2, NULL);
-					ch=',';					
-					WriteFile(file2, &ch, 1, &written2, NULL);
-					ch='{';					
-					WriteFile(file2, &ch, 1, &written2, NULL);
-					ch=direccion;						//Direccion A
-					WriteFile(file2, &ch, 1, &written2, NULL);
-					ch='}';					
-					WriteFile(file2, &ch, 1, &written2, NULL);
-					ch=',';					
-					WriteFile(file2, &ch, 1, &written2, NULL);				
-					ch=direccion;					//Origen
-					WriteFile(file2, &ch, 1, &written2, NULL);					 				 				
-					ch=',';					
-					WriteFile(file2, &ch, 1, &written2, NULL);
-					ch=direccion;					//Direccion A +1 = B
-					WriteFile(file2, &ch, 1, &written2, NULL);
-					ch='*';					
-					WriteFile(file2, &ch, 1, &written2, NULL);					 				 									            		
+							 				 							
 					
-					CloseHandle(file2);
+
 										
             		break;
             	case 51:

@@ -21,6 +21,8 @@ struct dar_msg {
 
 //F U N C I O N E S
 int reservar_paquete(dar_msg paq);
+
+
 void system_error(char *name);
 void crear_fichero();
 char get_Direccion();
@@ -146,9 +148,7 @@ int main(int argc, char **argv) {
          	{		 
             	case 49:
             		printf("Token validacion :) \n");            		            							
-            		//direccion='a';
-            		////				    
-				    
+            					   
 				     file2 = CreateFile( port_name2,
                          GENERIC_READ | GENERIC_WRITE,
                          0,
@@ -160,9 +160,9 @@ int main(int argc, char **argv) {
             		            		
 					   paquete paq;
 					    //strcpy(paq.cName, "1234");
-					    //paq.iVida=1;
+
 					    paq.org= 'a';
-					    paq.dest= 'b';
+					    paq.dest= 'a';
     
 				//	ax = reservar_paquete(paq);
 					

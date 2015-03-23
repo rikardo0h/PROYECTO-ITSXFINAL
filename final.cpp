@@ -14,13 +14,11 @@ struct paquete {
     char dest;              //Direccion destino
 };
 
-struct dar_msg {
-      char cName[10];
-      int iVida;
-    };
-
 //F U N C I O N E S
-int reservar_paquete(dar_msg paq);
+
+int reservar_paquete(paquete paq);
+
+
 void system_error(char *name);
 void crear_fichero();
 char get_Direccion();
@@ -160,14 +158,14 @@ int main(int argc, char **argv) {
             		            		
 					   paquete paq;
 					    //strcpy(paq.cName, "1234");
-					    //paq.iVida=1;
+
 					    paq.org= 'a';
 					    paq.dest= 'b';
-    
-				//	ax = reservar_paquete(paq);
+                    
+                        ax= reservar_paquete(paq);
 					
 					
-    				memcpy(cBytes, &paq, sizeof(paq));
+    				//memcpy(cBytes, &paq, sizeof(paq));
     
 					printf("%i",ax);
 					WriteFile( file2,
@@ -567,7 +565,7 @@ void system_error(char *name) {
 //
 
 //Verifica el tamaño del paquete y asigna memoria
-int reservar_paquete(dar_msg paq){
+int reservar_paquete(paquete paq){
     int cantidad =sizeof(paq);
     char cBytes[cantidad];
     printf("%i\n", sizeof(paq));

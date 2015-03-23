@@ -6,7 +6,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
-// Estructura de los paquetes y tokens
+// Estructura de los paquetes y tokens  TAMA„O 16 BYTES
 struct paquete {
     char tipo;              //Tipo de paquete o token
     char contenido[13];     //Contenido del paquete 13 caracteres
@@ -23,78 +23,85 @@ char direccion;
 
 using namespace std;
 int main(int argc, char **argv) {
-    int ch;
-    char buffer[16];
-    HANDLE file;
-    COMMTIMEOUTS timeouts;
-    DWORD read, written;
-    DCB port;
-    HANDLE keyboard = GetStdHandle(STD_INPUT_HANDLE);
-    HANDLE screen = GetStdHandle(STD_OUTPUT_HANDLE);
-    DWORD mode;
-    char port_name[128] = "\\\\.\\COM4";
-    char init[] = ""; // e.g., "ATZ" to completely reset a modem.
+    
+    /////// D E C L A R A C I O N E S     I N I C I A L E S
+        int ch;
+        char buffer[16];
+        HANDLE file;
+        COMMTIMEOUTS timeouts;
+        DWORD read, written;
+        DCB port;
+        HANDLE keyboard = GetStdHandle(STD_INPUT_HANDLE);
+        HANDLE screen = GetStdHandle(STD_OUTPUT_HANDLE);
+        DWORD mode;
+        char port_name[128] = "\\\\.\\COM4";    // Puerto de  L E C T U R A
+        char init[] = "";
 
 
-    char buffer2[1];
-	HANDLE file2;				    
-	DWORD read2, written2;				    				    
-	char port_name2[128] = "\\\\.\\COM1";	
-				    
-    // open the comm port.
-    file = CreateFile(port_name,
-        GENERIC_READ | GENERIC_WRITE ,
-        0, 
-        NULL, 
-        OPEN_EXISTING,
-        0,
-        NULL);
-
-/////
-    if ( INVALID_HANDLE_VALUE == file) {
-        system_error("opening file");
-        return 1;
-    }
-    // get the current DCB, and adjust a few bits to our liking.
-    memset(&port, 0, sizeof(port));
-    port.DCBlength = sizeof(port);
-    if ( !GetCommState(file, &port))
-        system_error("getting comm state");
-    if (!BuildCommDCB("baud=19200 parity=n data=8 stop=1", &port))
-        system_error("building comm DCB");
-    if (!SetCommState(file, &port))
-        system_error("adjusting port settings");
-
-	// set short timeouts on the comm port.
-    timeouts.ReadIntervalTimeout = 1;
-    timeouts.ReadTotalTimeoutMultiplier = 1;
-    timeouts.ReadTotalTimeoutConstant = 1;
-    timeouts.WriteTotalTimeoutMultiplier = 1;
-    timeouts.WriteTotalTimeoutConstant = 1;
-    if (!SetCommTimeouts(file, &timeouts))
-        system_error("setting port time-outs.");
-
-    // set keyboard to raw reading.
-    if (!GetConsoleMode(keyboard, &mode))
-        system_error("getting keyboard mode");
-    mode &= ~ ENABLE_PROCESSED_INPUT;
-    if (!SetConsoleMode(keyboard, mode))
-        system_error("setting keyboard mode");
-
-    if (!EscapeCommFunction(file, CLRDTR))
-        system_error("clearing DTR");
-    Sleep(200);
-    if (!EscapeCommFunction(file, SETDTR))
-        system_error("setting DTR");
-
-    if ( !WriteFile(file, init, sizeof(init), &written, NULL))
-        system_error("writing data to port");
-
-    if (written != sizeof(init))
-        system_error("not all data written to port");
-////
+        char buffer2[1];
+        HANDLE file2;				    
+        DWORD read2, written2;				    				    
+        char port_name2[128] = "\\\\.\\COM1";     // Puerto de E S C R I T U R A
+		
+    /////////////////////////
+    
+    /////////// A B R I R   P U E R T O    DE    L E C T U R A
+    
+        file = CreateFile(port_name,
+            GENERIC_READ | GENERIC_WRITE ,
+            0, 
+            NULL, 
+            OPEN_EXISTING,
+            0,
+            NULL);
 
 
+        if ( INVALID_HANDLE_VALUE == file) {
+            system_error("opening file");
+            return 1;
+        }
+        // get the current DCB, and adjust a few bits to our liking.
+        memset(&port, 0, sizeof(port));
+        port.DCBlength = sizeof(port);
+        if ( !GetCommState(file, &port))
+            system_error("getting comm state");
+        if (!BuildCommDCB("baud=19200 parity=n data=8 stop=1", &port))
+            system_error("building comm DCB");
+        if (!SetCommState(file, &port))
+            system_error("adjusting port settings");
+
+        // set short timeouts on the comm port.
+        timeouts.ReadIntervalTimeout = 1;
+        timeouts.ReadTotalTimeoutMultiplier = 1;
+        timeouts.ReadTotalTimeoutConstant = 1;
+        timeouts.WriteTotalTimeoutMultiplier = 1;
+        timeouts.WriteTotalTimeoutConstant = 1;
+        if (!SetCommTimeouts(file, &timeouts))
+            system_error("setting port time-outs.");
+
+        // set keyboard to raw reading.
+        if (!GetConsoleMode(keyboard, &mode))
+            system_error("getting keyboard mode");
+        mode &= ~ ENABLE_PROCESSED_INPUT;
+        if (!SetConsoleMode(keyboard, mode))
+            system_error("setting keyboard mode");
+
+        if (!EscapeCommFunction(file, CLRDTR))
+            system_error("clearing DTR");
+        Sleep(200);
+        if (!EscapeCommFunction(file, SETDTR))
+            system_error("setting DTR");
+
+        if ( !WriteFile(file, init, sizeof(init), &written, NULL))
+            system_error("writing data to port");
+
+        if (written != sizeof(init))
+            system_error("not all data written to port");
+
+    /////////////////////////
+
+
+    //// V A R I A B L E S    A U X I L I A R E S
 	DWORD bytes_escritos;
 	char cara;
     bool band=false;
@@ -105,20 +112,20 @@ int main(int argc, char **argv) {
 	int ax=0;   
 	char cBytes[16];
 	paquete message;
+    
+    /////////////////////////
+
+    /// C I C L O   P R I N C I P A L
     do {
-        ////// check for data on port and display it on screen.
-        
-        	ReadFile( file,
-                    buffer,
-                    sizeof(buffer),
-                    &read,
-                    NULL
-                    ); 
+       
+        //Lectura de paquetes
+        ReadFile( file, buffer, sizeof(buffer), &read, NULL );
                     
-          if(read)      
+        if(read)      //Si recibio Bytes
         {
-            memcpy(&message, buffer, 16);
-        	printf("%c %c\n", message.org, message.dest);
+            memcpy(&message, buffer, 16);   //    Recibo el paquete
+                //Muestra paquete tipo - contenido - origen - destino
+        	printf("%c %s %c %c \n", message.tipo , message.contenido ,message.org, message.dest);
         }
         
         
@@ -129,9 +136,7 @@ int main(int argc, char **argv) {
          	{		 
             	case 49:
             		printf("Token validacion :) \n");            		            							
-            		//direccion='a';
-            		////				    
-				    
+            				    
 				     file2 = CreateFile( port_name2,
                          GENERIC_READ | GENERIC_WRITE,
                          0,
@@ -142,26 +147,26 @@ int main(int argc, char **argv) {
                          );			    				    
             		            		
 					   paquete paq;
-					    //strcpy(paq.cName, "1234");
-
-					    paq.org= 'a';
+					    
+    
+                        paq.tipo= '1';
+                        strcpy(paq.contenido, "1234");
+                        paq.org= 'a';
 					    paq.dest= 'b';
                     
-                        //ax= reservar_paquete(paq);
-					
-					
-    				memcpy(cBytes, &paq, sizeof(paq));
+                        memcpy(cBytes, &paq, sizeof(paq));
     
-					printf("%i",ax);
-					WriteFile( file2,
-	                   cBytes, //cBytes, //bytes_a_enviar,
-	                   16,//tam_img, //sizeof(cBytes), //(bytes_a_enviar),
-	                   &written,
-	                   NULL);
+                        //Envia el paquete
+                    
+                        WriteFile( file2,
+                           cBytes, //cBytes, //bytes_a_enviar,
+                           16,//tam_img, //sizeof(cBytes), //(bytes_a_enviar),
+                           &written,
+                           NULL);
 					
 				
 					
-					CloseHandle(file2);
+                        CloseHandle(file2);  //Cierra la escritura
 							
             		break;
             	case 50:

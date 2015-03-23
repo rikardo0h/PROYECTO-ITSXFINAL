@@ -162,10 +162,10 @@ int main(int argc, char **argv) {
 					    paq.org= 'a';
 					    paq.dest= 'b';
                     
-                        ax= reservar_paquete(paq);
+                        //ax= reservar_paquete(paq);
 					
 					
-    				//memcpy(cBytes, &paq, sizeof(paq));
+    				memcpy(cBytes, &paq, sizeof(paq));
     
 					printf("%i",ax);
 					WriteFile( file2,

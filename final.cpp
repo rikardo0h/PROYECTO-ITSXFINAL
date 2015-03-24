@@ -17,6 +17,7 @@ struct paquete {
 //F U N C I O N E S
 void system_error(char *name);
 void token_validacion(struct paquete *paq, char direccion);
+void respuesta(struct paquete message);
 
 
 bool validado=false;
@@ -127,6 +128,10 @@ int main(int argc, char **argv) {
             memcpy(&message, buffer, 16);   //    Recibo el paquete
                 //Muestra paquete tipo - contenido - origen - destino
         	printf("%c %s %c %c \n", message.tipo , message.contenido ,message.org, message.dest);
+            
+            //Dar respuesta al paquete
+            respuesta(message);
+            
         }
         
         
@@ -151,7 +156,6 @@ int main(int argc, char **argv) {
             		            		
                         paquete paq;
                         token_validacion(&paq ,'a');
-                    
                         memcpy(cBytes, &paq, sizeof(paq));
                     
     
@@ -226,4 +230,9 @@ void token_validacion(struct paquete *paq, char direccion){
     paq->dest= direccion;
     
 
+}
+
+// Dar respuesta al paquete de lectura
+void respuesta(struct paquete message){
+    printf("En la funcion: %c %s %c %c \n", message.tipo , message.contenido ,message.org, message.dest);
 }

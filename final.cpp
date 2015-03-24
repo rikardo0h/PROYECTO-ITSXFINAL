@@ -29,7 +29,7 @@ using namespace std;
 int main(int argc, char **argv) {
     
     /////// D E C L A R A C I O N E S     I N I C I A L E S
-    
+
         int ch;
         char buffer[16];
         HANDLE file;

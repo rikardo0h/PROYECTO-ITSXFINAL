@@ -335,7 +335,7 @@ void respuesta(struct paquete message){
         
         case '9':
             printf("ACK recibido");
-            if (message.contenido[0]=='1') {
+            if (message.contenido[0]==49) {
                 printf("Red correcta");
                 validado=true;
             }else

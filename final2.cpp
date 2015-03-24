@@ -200,9 +200,9 @@ int main(int argc, char **argv) {
                     
                     //Creaci—n de token de validaci—n
                     
-                    paquete paq;
-                    token_descubrimiento(&paq ,'a');
-                    memcpy(cBytes, &paq, sizeof(paq));
+                    paquete paq2;
+                    token_descubrimiento(&paq2 ,'a');
+                    memcpy(cBytes, &paq2, sizeof(paq2));
                     
                     
                     //Envia el paquete

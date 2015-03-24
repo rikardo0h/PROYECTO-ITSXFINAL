@@ -453,7 +453,7 @@ void respuesta(struct paquete message){
         case '3':
             printf("Token de publicaci—n");
             nodos = message.cant;
-            printf("Nodos", %nodos);
+            printf("Nodos %i", nodos);
             
             break;
         

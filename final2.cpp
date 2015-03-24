@@ -378,6 +378,7 @@ void token_publicacion(struct paquete *paq, char cantidad){
 
 // Dar respuesta al paquete de lectura
 void respuesta(struct paquete message){
+    printf("------------ %c --------------- \n", direccion);
     printf("En la funcion: %c %s %c %c \n", message.tipo , message.contenido ,message.org, message.dest);
     
     //Depende del tipo de paquete / token

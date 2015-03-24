@@ -239,8 +239,8 @@ int main(int argc, char **argv) {
                      printf("Cantidad de Nodos totales en la red:  %i \n", nodos );
                     
                     
-                    m=1;
-                    while (m!=nodos) {
+                    m=0;
+                    while ( m < nodos) {
                         printf("Equipo %c", 96+m);
                         m=m+1;
                     }

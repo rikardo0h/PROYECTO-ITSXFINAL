@@ -292,7 +292,7 @@ void reenvio_paquete(struct paquete paq){
 
 void ack_validado (struct paquete *paq){
     
-    paq->tipo = '3';
+    paq->tipo = '9';
     paq->org  = direccion;
     paq->dest = direccion;
     strcpy(paq->contenido, "1");

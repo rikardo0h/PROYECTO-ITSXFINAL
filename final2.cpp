@@ -449,6 +449,14 @@ void respuesta(struct paquete message){
             
             break;
             
+        case '3':
+            printf("Token de publicaci—n");
+            nodos = message.cant;
+            printf("Nodos", %nodos);
+            
+            break;
+
+            
         case '9':
             printf("ACK recibido");
             if (message.contenido[0]==49) {

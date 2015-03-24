@@ -39,6 +39,7 @@ void token_publicacion(struct direcciones *paq, int cantidad);
 //Variables del nodo
 bool validado=false;
 char direccion;
+int nodos=0;
 
 //Variables de puertos
 char port_name[128] = "\\\\.\\COM4";    // Puerto de  L E C T U R A
@@ -193,6 +194,7 @@ int main(int argc, char **argv) {
 					
                         CloseHandle(file2);  //Cierra la escritura
                         direccion = 'a';
+                        nodos = 0;
                         validado = false;
 							
             		break;
@@ -446,6 +448,12 @@ void respuesta(struct paquete message){
                 
             }
 
+            break;
+            
+        case '3':
+            printf("Token de publicaci—n");
+            nodos = message.cant;
+            printf("Nodos", %nodos);
             
             break;
         

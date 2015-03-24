@@ -553,19 +553,21 @@ void respuesta(struct paquete message){
         case '4':
             printf("Token disponibilidad");
             
-                if (propietario(message.dest)) {
-                    printf("Propio y lo encontre ");
+            if (propietario(message.dest)) {
+                printf("Propio y lo encontre ");
                 /// ACK de host disponible
                 
-                    paquete disponible;
-                    ack_disponible(&disponible,message.org);
-                    reenvio_paquete(disponible);
+                paquete disponible;
+                ack_disponible(&disponible,message.org);
+                reenvio_paquete(disponible);
                 
                 ///
             } else {
-                //Se pasa al siguiente host el mensaje
-                printf("Desconocio");
-                reenvio_paquete(message);
+                if (!propietario(message.origen)) {
+                    printf("Desconocio");
+                    reenvio_paquete(message);
+                }
+                
             }
             break;
             

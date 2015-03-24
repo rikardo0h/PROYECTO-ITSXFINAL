@@ -563,9 +563,11 @@ void respuesta(struct paquete message){
                 
                 ///
             } else {
-                //Se pasa al siguiente host el mensaje
-                printf("Desconocio");
-                reenvio_paquete(message);
+                if (!propietario(message.origen)) {
+                    printf("Desconocio");
+                    reenvio_paquete(message);
+                }
+
             }
             break;
             

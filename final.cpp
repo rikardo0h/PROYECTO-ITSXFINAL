@@ -307,8 +307,7 @@ void token_descubrimiento(struct paquete *paq, char direccion){
     paq->tipo= '2';
     paq->org= direccion;
     paq->dest= direccion;
-    strcpy(paq->contenido, direccion);
-    
+    strcpy(paq->contenido, &direccion);
     
 }
 
@@ -345,7 +344,7 @@ void respuesta(struct paquete message){
         case '2':
             printf("Descubrimiento");
             direccion = message.contenido[0]+1;
-            strcpy(message.contenido, direccion);
+            strcpy(message.contenido, &direccion);
             reenvio_paquete(message);
             
             

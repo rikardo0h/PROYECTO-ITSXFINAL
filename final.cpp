@@ -235,4 +235,16 @@ void token_validacion(struct paquete *paq, char direccion){
 // Dar respuesta al paquete de lectura
 void respuesta(struct paquete message){
     printf("En la funcion: %c %s %c %c \n", message.tipo , message.contenido ,message.org, message.dest);
+    switch (message.tipo) {
+        case 1:
+            printf("Validaci—n");
+            break;
+        case 2:
+            printf("Descurbimiento");
+            break;
+            
+        default:
+            printf("No identificado");
+            break;
+    }
 }

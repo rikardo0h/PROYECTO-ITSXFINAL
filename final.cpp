@@ -405,7 +405,7 @@ void respuesta(struct paquete message){
                 reenvio_paquete(message);
             }else{
                   printf("Nodos %i", message.contenido[0]- 96 );
-                
+                  nodos = message.contenido[0]- 96;
                 //Token de publicaci—n
                 
                     paquete tabla;

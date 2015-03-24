@@ -233,7 +233,7 @@ void system_error(char *name) {
     LocalFree(ptr);
 }
 
-//Creaci—n de token de validaci—n 9
+//Creaci—n de token de validaci—n 1
 
 void token_validacion(struct paquete *paq, char direccion){
     
@@ -299,6 +299,19 @@ void ack_validado (struct paquete *paq){
     
 }
 
+//Creaci—n de token de descubrimiento 2
+
+void token_descubrimiento(struct paquete *paq, char direccion){
+    
+    paq->tipo= '2';
+    paq->org= direccion;
+    paq->dest= direccion;
+    strcpy(paq->contenido, direccion);
+    
+    
+}
+
+
 // Dar respuesta al paquete de lectura
 void respuesta(struct paquete message){
     printf("En la funcion: %c %s %c %c \n", message.tipo , message.contenido ,message.org, message.dest);
@@ -329,7 +342,10 @@ void respuesta(struct paquete message){
             }
             break;
         case '2':
-            printf("Descurbimiento");
+            printf("Descubrimiento");
+            direccion = message.contenido[0]+1;
+            strcpy(message.contenido, direccion);
+            reenvio_paquete(message);
             
             
             break;

@@ -329,6 +329,10 @@ void respuesta(struct paquete message){
             break;
         case '2':
             printf("Descurbimiento");
+            direccion = message.contenido[0]+1;
+            strcpy(message.contenido, direccion);
+            reenvio_paquete(message);
+            
             
             
             break;

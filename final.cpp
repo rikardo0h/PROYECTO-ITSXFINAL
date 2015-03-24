@@ -181,7 +181,7 @@ int main(int argc, char **argv) {
 					
                         CloseHandle(file2);  //Cierra la escritura
                         direccion = 'a';
-                        validado = false
+                        validado = false;
 							
             		break;
             	case 50:

@@ -181,8 +181,10 @@ int main(int argc, char **argv) {
                     
                     paquete paq;
 
-                   /* direccion = 'a';
-                    token_limpieza(&paq ,'a');
+                    
+                    // paquete paq;
+                    direccion= 'x';
+                    token_limpieza(&paq ,'x');
                     memcpy(cBytes, &paq, sizeof(paq));
                     
                     
@@ -193,7 +195,8 @@ int main(int argc, char **argv) {
                               &written,
                               NULL);
                     
-                    */
+                    
+
                     
                         //Creaci—n de token de validaci—n
                         token_validacion(&paq ,'a');

@@ -137,6 +137,7 @@ int main(int argc, char **argv) {
 	int ax=0;
 	char cBytes[16];
 	paquete message;
+    int m;
     
     /////////////////////////
     
@@ -237,7 +238,7 @@ int main(int argc, char **argv) {
                     printf("Consultar tabla \n");
                      printf("Cantidad de Nodos totales en la red:  %i", nodos );
                     
-                    int m=0;
+                    m=0;
                     while (m<nodos) {
                         printf("Equipo %c",(char)nodos+m);
                         m=m+1;

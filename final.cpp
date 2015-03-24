@@ -43,6 +43,7 @@ void token_disponibilidad(struct paquete *paq, char destino);
 bool validado=false;
 char direccion;
 int nodos=0;
+bool ping=false;
 
 //Variables de puertos
 char port_name[128] = "\\\\.\\COM4";    // Puerto de  L E C T U R A
@@ -295,6 +296,7 @@ int main(int argc, char **argv) {
                     
                     printf("Token disponibilidad \n");
             		
+                    ping=false;
                     
                     file2 = CreateFile( port_name2,
                                        GENERIC_READ | GENERIC_WRITE,
@@ -307,12 +309,12 @@ int main(int argc, char **argv) {
                     
                     //Creaci—n de token de validaci—n
                     
-                    paquete paq3;
+                    paquete paq4;
                     
                     ch = getch();
                     
-                    token_disponibilidad(&paq2 ,ch);
-                    memcpy(cBytes, &paq3, sizeof(paq3));
+                    token_disponibilidad(&paq4 ,ch);
+                    memcpy(cBytes, &paq4, sizeof(paq4));
                     
                     
                     //Envia el paquete

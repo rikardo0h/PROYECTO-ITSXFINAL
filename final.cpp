@@ -303,6 +303,7 @@ void respuesta(struct paquete message){
                 
             } else {
                 printf("Desconocio");
+                strcpy(message.contenido, "reenvi");
                 reenvio_paquete(message);
                 
             }

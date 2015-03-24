@@ -240,7 +240,7 @@ int main(int argc, char **argv) {
                     
                     m=0;
                     while ( m < nodos) {
-                        printf("Equipo %c\n ", 97+m);
+                        printf("Equipo %c ", 97+m);
                         if (direccion == 97+m) {
                             printf("<<<<<  \n ");
                         }else

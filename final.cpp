@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
         HANDLE keyboard = GetStdHandle(STD_INPUT_HANDLE);
         HANDLE screen = GetStdHandle(STD_OUTPUT_HANDLE);
         DWORD mode;
-                char init[] = "";
+        char init[] = "";
 
 
         char buffer2[1];
@@ -259,7 +259,7 @@ void reenvio_paquete(struct paquete paq){
 
     DWORD read2, written2;
     char cBytes[16];
-    
+    HANDLE file2;
     file2 = CreateFile( port_name2,
                        GENERIC_READ | GENERIC_WRITE,
                        0,

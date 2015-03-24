@@ -268,9 +268,9 @@ int main(int argc, char **argv) {
                     
                     //Creaci—n de token de validaci—n
                     
-                    paquete paq2;
-                    token_limpieza(&paq2 ,'a');
-                    memcpy(cBytes, &paq2, sizeof(paq2));
+                    paquete paq3;
+                    token_limpieza(&paq3 ,'a');
+                    memcpy(cBytes, &paq3, sizeof(paq3));
                     
                     
                     //Envia el paquete

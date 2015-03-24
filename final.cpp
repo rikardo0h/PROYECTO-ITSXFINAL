@@ -341,7 +341,9 @@ void respuesta(struct paquete message){
             }else
                 printf("No correcta");
             
-            reenvio_paquete(message);
+            if (!propietario) {
+                reenvio_paquete(message);
+            }
             
             break;
 

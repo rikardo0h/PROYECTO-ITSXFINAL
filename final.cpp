@@ -34,6 +34,8 @@ void token_validacion(struct paquete *paq, char direccion);
 void token_descubrimiento(struct paquete *paq, char direccion);
 void token_publicacion(struct paquete *paq, int cantidad);
 void token_limpieza(struct paquete *paq, char direccion);
+void ack_disponible(struct paquete *paq, char destino);
+void token_disponibilidad(struct paquete *paq, char destino);
 
 
 
@@ -289,6 +291,46 @@ int main(int argc, char **argv) {
                     
 					break;
                     
+                case 53:
+                    
+                    printf("Token disponibilidad \n");
+            		
+                    
+                    file2 = CreateFile( port_name2,
+                                       GENERIC_READ | GENERIC_WRITE,
+                                       0,
+                                       NULL,
+                                       OPEN_EXISTING,
+                                       FILE_ATTRIBUTE_NORMAL,
+                                       NULL
+                                       );
+                    
+                    //Creaci—n de token de validaci—n
+                    
+                    paquete paq3;
+                    
+                    ch = getch();
+                    
+                    token_disponibilidad(&paq2 ,ch);
+                    memcpy(cBytes, &paq3, sizeof(paq3));
+                    
+                    
+                    //Envia el paquete
+                    
+                    WriteFile( file2,
+                              cBytes, //cBytes, //bytes_a_enviar,
+                              16,//tam_img, //sizeof(cBytes), //(bytes_a_enviar),
+                              &written,
+                              NULL);
+					
+                    
+					
+                    CloseHandle(file2);  //Cierra la escritura
+                    
+                    
+                    
+					break;
+                    
             	default:
             	{
                     printf("Salida \n");
@@ -410,8 +452,6 @@ void token_publicacion(struct paquete *paq, char cantidad){
     paq->org= direccion;
     paq->dest= direccion;
     strcpy(paq->contenido, &cantidad);
-    
-    
 }
 
 //Limpieza
@@ -421,6 +461,25 @@ void token_limpieza(struct paquete *paq, char direccion){
     paq->org= direccion;
     paq->dest= direccion;
 }
+
+//Limpieza
+
+void token_disponibilidad(struct paquete *paq, char destino){
+    
+    paq->tipo= '4';
+    paq->org= direccion;
+    paq->dest= destino;
+}
+
+//ACK Disponible
+void ack_disponible(struct paquete *paq, char destino){
+    
+    paq->tipo= '5';
+    paq->org= direccion;
+    paq->dest= destino;
+    strcpy(paq->contenido, "1");
+}
+
 
 // Dar respuesta al paquete de lectura
 void respuesta(struct paquete message){
@@ -487,9 +546,47 @@ void respuesta(struct paquete message){
                 printf("Nodos %i", nodos);
             }
             
+            break;
             
+        case '4':
+            printf("Token disponibilidad");
+            
+                if (propietario(message.dest)) {
+                    printf("Propio y lo encontre ");
+                /// ACK de host disponible
+                
+                    paquete disponible;
+                    ack_disponible(&disponible,message.org);
+                    reenvio_paquete(disponible);
+                
+                ///
+            } else {
+                //Se pasa al siguiente host el mensaje
+                printf("Desconocio");
+                reenvio_paquete(message);
+            }
+            break;
+            
+        case '5':
+            printf("ACK disponible recibido");
+            
+            if (propietario( message.dest)) {
+                
+                if (message.contenido[0]==49) {
+                    printf("Host encontrado");
+                    ping=true;
+                }else{
+                    printf("No encontrado");
+                    ping=false;
+                }
+                
+            }else{
+                reenvio_paquete(message);
+            }
             
             break;
+
+            
             
         case '8':
             printf("Token de limpieza");

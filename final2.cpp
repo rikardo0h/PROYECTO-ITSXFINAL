@@ -388,7 +388,7 @@ void token_publicacion(struct direcciones *paq, int cantidad){
     paq->tipo= '3';
     paq->org= direccion;
     paq->dest= direccion;
-    paq->cantidad=cantidad;
+    paq->cant=cant;
     
     
 }

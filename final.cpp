@@ -51,82 +51,82 @@ using namespace std;
 int main(int argc, char **argv) {
     
     /////// D E C L A R A C I O N E S     I N I C I A L E S
-
-        int ch;
-        char buffer[16];
-        HANDLE file;
-        COMMTIMEOUTS timeouts;
-        DWORD read, written;
-        DCB port;
-        HANDLE keyboard = GetStdHandle(STD_INPUT_HANDLE);
-        HANDLE screen = GetStdHandle(STD_OUTPUT_HANDLE);
-        DWORD mode;
-        char init[] = "";
-
-
-        char buffer2[1];
-        HANDLE file2;				    
-        DWORD read2, written2;				    				    
     
-		
+    int ch;
+    char buffer[16];
+    HANDLE file;
+    COMMTIMEOUTS timeouts;
+    DWORD read, written;
+    DCB port;
+    HANDLE keyboard = GetStdHandle(STD_INPUT_HANDLE);
+    HANDLE screen = GetStdHandle(STD_OUTPUT_HANDLE);
+    DWORD mode;
+    char init[] = "";
+    
+    
+    char buffer2[1];
+    HANDLE file2;
+    DWORD read2, written2;
+    
+    
     /////////////////////////
     
     /////////// A B R I R   P U E R T O    DE    L E C T U R A
     
-        file = CreateFile(port_name,
-            GENERIC_READ | GENERIC_WRITE ,
-            0, 
-            NULL, 
-            OPEN_EXISTING,
-            0,
-            NULL);
-
-
-        if ( INVALID_HANDLE_VALUE == file) {
-            system_error("opening file");
-            return 1;
-        }
-        // get the current DCB, and adjust a few bits to our liking.
-        memset(&port, 0, sizeof(port));
-        port.DCBlength = sizeof(port);
-        if ( !GetCommState(file, &port))
-            system_error("getting comm state");
-        if (!BuildCommDCB("baud=19200 parity=n data=8 stop=1", &port))
-            system_error("building comm DCB");
-        if (!SetCommState(file, &port))
-            system_error("adjusting port settings");
-
-        // set short timeouts on the comm port.
-        timeouts.ReadIntervalTimeout = 1;
-        timeouts.ReadTotalTimeoutMultiplier = 1;
-        timeouts.ReadTotalTimeoutConstant = 1;
-        timeouts.WriteTotalTimeoutMultiplier = 1;
-        timeouts.WriteTotalTimeoutConstant = 1;
-        if (!SetCommTimeouts(file, &timeouts))
-            system_error("setting port time-outs.");
-
-        // set keyboard to raw reading.
-        if (!GetConsoleMode(keyboard, &mode))
-            system_error("getting keyboard mode");
-        mode &= ~ ENABLE_PROCESSED_INPUT;
-        if (!SetConsoleMode(keyboard, mode))
-            system_error("setting keyboard mode");
-
-        if (!EscapeCommFunction(file, CLRDTR))
-            system_error("clearing DTR");
-        Sleep(200);
-        if (!EscapeCommFunction(file, SETDTR))
-            system_error("setting DTR");
-
-        if ( !WriteFile(file, init, sizeof(init), &written, NULL))
-            system_error("writing data to port");
-
-        if (written != sizeof(init))
-            system_error("not all data written to port");
-
+    file = CreateFile(port_name,
+                      GENERIC_READ | GENERIC_WRITE ,
+                      0,
+                      NULL,
+                      OPEN_EXISTING,
+                      0,
+                      NULL);
+    
+    
+    if ( INVALID_HANDLE_VALUE == file) {
+        system_error("opening file");
+        return 1;
+    }
+    // get the current DCB, and adjust a few bits to our liking.
+    memset(&port, 0, sizeof(port));
+    port.DCBlength = sizeof(port);
+    if ( !GetCommState(file, &port))
+        system_error("getting comm state");
+    if (!BuildCommDCB("baud=19200 parity=n data=8 stop=1", &port))
+        system_error("building comm DCB");
+    if (!SetCommState(file, &port))
+        system_error("adjusting port settings");
+    
+    // set short timeouts on the comm port.
+    timeouts.ReadIntervalTimeout = 1;
+    timeouts.ReadTotalTimeoutMultiplier = 1;
+    timeouts.ReadTotalTimeoutConstant = 1;
+    timeouts.WriteTotalTimeoutMultiplier = 1;
+    timeouts.WriteTotalTimeoutConstant = 1;
+    if (!SetCommTimeouts(file, &timeouts))
+        system_error("setting port time-outs.");
+    
+    // set keyboard to raw reading.
+    if (!GetConsoleMode(keyboard, &mode))
+        system_error("getting keyboard mode");
+    mode &= ~ ENABLE_PROCESSED_INPUT;
+    if (!SetConsoleMode(keyboard, mode))
+        system_error("setting keyboard mode");
+    
+    if (!EscapeCommFunction(file, CLRDTR))
+        system_error("clearing DTR");
+    Sleep(200);
+    if (!EscapeCommFunction(file, SETDTR))
+        system_error("setting DTR");
+    
+    if ( !WriteFile(file, init, sizeof(init), &written, NULL))
+        system_error("writing data to port");
+    
+    if (written != sizeof(init))
+        system_error("not all data written to port");
+    
     /////////////////////////
-
-
+    
+    
     //// V A R I A B L E S    A U X I L I A R E S
 	DWORD bytes_escritos;
 	char cara;
@@ -134,24 +134,24 @@ int main(int argc, char **argv) {
     int w=0;
     int i=0;
     int destino=0;
-    bool propietario= false; 
-	int ax=0;   
+    bool propietario= false;
+	int ax=0;
 	char cBytes[16];
 	paquete message;
     int m;
     
     /////////////////////////
-
+    
     /// C I C L O   P R I N C I P A L
     do {
-       
+        
         //Lectura de paquetes
         ReadFile( file, buffer, sizeof(buffer), &read, NULL );
-                    
+        
         if(read)      //Si recibio Bytes
         {
             memcpy(&message, buffer, 16);   //    Recibo el paquete
-                //Muestra paquete tipo - contenido - origen - destino
+            //Muestra paquete tipo - contenido - origen - destino
         	printf("%c %s %c %c \n", message.tipo , message.contenido ,message.org, message.dest);
             
             //Dar respuesta al paquete
@@ -160,47 +160,46 @@ int main(int argc, char **argv) {
         }
         
         
-        ///////        
+        ///////
         if ( kbhit() ) {
             ch = getch();
-            switch (ch) 
-         	{		 
+            switch (ch)
+         	{
             	case 49:
-            		printf("Token validacion :) \n");            		            							
-            				    
-				     file2 = CreateFile( port_name2,
-                         GENERIC_READ | GENERIC_WRITE,
-                         0,
-                         NULL,
-                         OPEN_EXISTING,
-                         FILE_ATTRIBUTE_NORMAL,
-                         NULL
-                         );
+            		printf("Token validacion :) \n");
                     
-                    //LIMPIEZA
+                    file2 = CreateFile( port_name2,
+                                       GENERIC_READ | GENERIC_WRITE,
+                                       0,
+                                       NULL,
+                                       OPEN_EXISTING,
+                                       FILE_ATTRIBUTE_NORMAL,
+                                       NULL
+                                       );
                     
-                        paquete paq;
-                        direccion = 'a';
-                        //Creaci—n de token de validaci—n
-                        token_validacion(&paq ,'a');
-                        memcpy(cBytes, &paq, sizeof(paq));
+                    //Creaci—n de token de validaci—n
                     
-    
-                        //Envia el paquete
+                    paquete paq;
+                    direccion = 'a';
+                    token_validacion(&paq ,'a');
+                    memcpy(cBytes, &paq, sizeof(paq));
                     
-                        WriteFile( file2,
-                           cBytes, //cBytes, //bytes_a_enviar,
-                           16,//tam_img, //sizeof(cBytes), //(bytes_a_enviar),
-                           &written,
-                           NULL);
+                    
+                    //Envia el paquete
+                    
+                    WriteFile( file2,
+                              cBytes, //cBytes, //bytes_a_enviar,
+                              16,//tam_img, //sizeof(cBytes), //(bytes_a_enviar),
+                              &written,
+                              NULL);
 					
-                   
+                    
 					
-                        CloseHandle(file2);  //Cierra la escritura
-                        direccion = 'a';
-                        nodos = 0;
-                        validado = false;
-							
+                    CloseHandle(file2);  //Cierra la escritura
+                    direccion = 'a';
+                    nodos = 0;
+                    validado = false;
+                    
             		break;
             	case 50:
             		printf("Token descubrimiento \n");
@@ -215,9 +214,6 @@ int main(int argc, char **argv) {
                                        NULL
                                        );
                     
-                    
-					
-
                     //Creaci—n de token de validaci—n
                     
                     paquete paq2;
@@ -237,12 +233,12 @@ int main(int argc, char **argv) {
 					
                     CloseHandle(file2);  //Cierra la escritura
 					
-
-										
+                    
+                    
             		break;
             	case 51:
                     printf("Consultar tabla \n");
-                    printf("Cantidad de Nodos totales en la red: %i \n", nodos );
+                    printf("Cantidad de Nodos totales en la red:  %i \n", nodos );
                     
                     m=0;
                     while ( m < nodos) {
@@ -254,24 +250,55 @@ int main(int argc, char **argv) {
                         m=m+1;
                     }
                     
+                    
 					break;
-                 
-            	case 52:
-                    printf("Token de disponibilidad \n");
                     
-                    break;
+                case 52:
+                    printf("Limpieza \n");
                     
-            	default: 
+                    
+                    file2 = CreateFile( port_name2,
+                                       GENERIC_READ | GENERIC_WRITE,
+                                       0,
+                                       NULL,
+                                       OPEN_EXISTING,
+                                       FILE_ATTRIBUTE_NORMAL,
+                                       NULL
+                                       );
+                    
+                    //Creaci—n de token de validaci—n
+                    
+                    paquete paq2;
+                    token_limpieza(&paq2 ,'a');
+                    memcpy(cBytes, &paq2, sizeof(paq2));
+                    
+                    
+                    //Envia el paquete
+                    
+                    WriteFile( file2,
+                              cBytes, //cBytes, //bytes_a_enviar,
+                              16,//tam_img, //sizeof(cBytes), //(bytes_a_enviar),
+                              &written,
+                              NULL);
+					
+                    
+					
+                    CloseHandle(file2);  //Cierra la escritura
+                    
+                    
+					break;
+                    
+            	default:
             	{
                     printf("Salida \n");
                     return 1;
                		break;
             	}
-			}                        
+			}
         }
-    // until user hits ctrl-backspace.
+        // until user hits ctrl-backspace.
     } while ( ch != 127);
-
+    
     //////////////////////////////
 	// close up and go home.
     CloseHandle(keyboard);
@@ -279,20 +306,20 @@ int main(int argc, char **argv) {
     return 0;
 }
 
-//// F U N C I O N E S 
+//// F U N C I O N E S
 
 //E R R O R
 void system_error(char *name) {
 	char *ptr = NULL;
     FormatMessage(
-        FORMAT_MESSAGE_ALLOCATE_BUFFER |
-        FORMAT_MESSAGE_FROM_SYSTEM,
-        0,
-        GetLastError(),
-        0,
-        (char *)&ptr,
-        1024,
-        NULL);
+                  FORMAT_MESSAGE_ALLOCATE_BUFFER |
+                  FORMAT_MESSAGE_FROM_SYSTEM,
+                  0,
+                  GetLastError(),
+                  0,
+                  (char *)&ptr,
+                  1024,
+                  NULL);
     fprintf(stderr, "\nError %s: %s\n", name, ptr);
     LocalFree(ptr);
 }
@@ -305,7 +332,7 @@ void token_validacion(struct paquete *paq, char direccion){
     paq->org= direccion;
     paq->dest= direccion;
     
-
+    
 }
 
 // Propietario del token
@@ -319,7 +346,7 @@ bool propietario(char destino){
 
 // Funci—n de envio de paquete independiente
 void reenvio_paquete(struct paquete paq){
-
+    
     DWORD read2, written2;
     char cBytes[16];
     HANDLE file2;
@@ -382,10 +409,11 @@ void token_publicacion(struct paquete *paq, char cantidad){
     paq->org= direccion;
     paq->dest= direccion;
     strcpy(paq->contenido, &cantidad);
-
+    
     
 }
 
+//Limpieza
 void token_limpieza(struct paquete *paq, char direccion){
     
     paq->tipo= '8';
@@ -393,10 +421,9 @@ void token_limpieza(struct paquete *paq, char direccion){
     paq->dest= direccion;
 }
 
-
 // Dar respuesta al paquete de lectura
 void respuesta(struct paquete message){
-        printf("------------ %c --------------- \n", direccion);
+    printf("------------ %c --------------- \n", direccion);
     printf("En la funcion: %c %s %c %c \n", message.tipo , message.contenido ,message.org, message.dest);
     
     //Depende del tipo de paquete / token
@@ -412,7 +439,7 @@ void respuesta(struct paquete message){
                 paquete paq;
                 ack_validado(&paq);
                 reenvio_paquete(paq);
-
+                
                 
                 ///
             } else {
@@ -434,18 +461,18 @@ void respuesta(struct paquete message){
                 strcpy(message.contenido, &direccion);
                 reenvio_paquete(message);
             }else{
-                  printf("Nodos %i", message.contenido[0]- 96 );
-                  nodos = message.contenido[0]- 96;
+                printf("Nodos %i", message.contenido[0]- 96 );
+                nodos = message.contenido[0]- 96;
                 //Token de publicaci—n
                 
-                    paquete tabla;
-                    token_publicacion(&tabla,message.contenido[0]);
-                    reenvio_paquete(tabla);
-
+                paquete tabla;
+                token_publicacion(&tabla,message.contenido[0]);
+                reenvio_paquete(tabla);
+                
                 //token de publicacion
                 
             }
-
+            
             break;
             
         case '3':
@@ -459,19 +486,24 @@ void respuesta(struct paquete message){
                 printf("Nodos %i", nodos);
             }
             
+            
+            
             break;
             
         case '8':
-             printf("Token de limpieza");
+            printf("Token de limpieza");
             if (!propietario(message.dest)) {
-                direccion='\0';
-                reenvio_paquete(message);
+                printf("No es para mi");
+                //direccion='\0';
+                //reenvio_paquete(message);
             }else{
-                direccion='\0';
+                printf("Es para mi");
+                //                direccion='\0';
             }
             
             break;
-        
+            
+            
         case '9':
             printf("ACK recibido");
             if (message.contenido[0]==49) {
@@ -485,7 +517,7 @@ void respuesta(struct paquete message){
             }
             
             break;
-
+            
             
         default:
             printf("No identificado");

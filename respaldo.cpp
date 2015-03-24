@@ -6,7 +6,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
-// Estructura de los paquetes y tokens  TAMA凮 16 BYTES
+// Estructura de los paquetes y tokens  TAMA脩O 16 BYTES
 struct paquete {
     char tipo;              //Tipo de paquete o token
     char contenido[13];     //Contenido del paquete 13 caracteres
@@ -43,8 +43,8 @@ char direccion;
 int nodos=0;
 
 //Variables de puertos
-char port_name[128] = "\\\\.\\COM2";    // Puerto de  L E C T U R A
-char port_name2[128] = "\\\\.\\COM3";     // Puerto de E S C R I T U R A
+char port_name[128] = "\\\\.\\COM4";    // Puerto de  L E C T U R A
+char port_name2[128] = "\\\\.\\COM1";     // Puerto de E S C R I T U R A
 
 
 using namespace std;
@@ -177,10 +177,11 @@ int main(int argc, char **argv) {
                                        NULL
                                        );
                     
-                    //Creaci梟 de token de validaci梟
+                    //LIMPIEZA
                     
                     paquete paq;
                     direccion = 'a';
+                    //Creaci贸n de token de validaci贸n
                     token_validacion(&paq ,'a');
                     memcpy(cBytes, &paq, sizeof(paq));
                     
@@ -214,7 +215,10 @@ int main(int argc, char **argv) {
                                        NULL
                                        );
                     
-                    //Creaci梟 de token de validaci梟
+                    
+					
+                    
+                    //Creaci贸n de token de validaci贸n
                     
                     paquete paq2;
                     token_descubrimiento(&paq2 ,'a');
@@ -238,7 +242,7 @@ int main(int argc, char **argv) {
             		break;
             	case 51:
                     printf("Consultar tabla \n");
-                    printf("Cantidad de Nodos totales en la red:  %i \n", nodos );
+                    printf("Cantidad de Nodos totales en la red: %i \n", nodos );
                     
                     m=0;
                     while ( m < nodos) {
@@ -249,44 +253,13 @@ int main(int argc, char **argv) {
                             printf("\n");
                         m=m+1;
                     }
-
                     
 					break;
                     
-                case 52:
-                    printf("Limpieza \n");
+            	case 52:
+                    printf("Token de disponibilidad \n");
                     
-                    
-                    file2 = CreateFile( port_name2,
-                                       GENERIC_READ | GENERIC_WRITE,
-                                       0,
-                                       NULL,
-                                       OPEN_EXISTING,
-                                       FILE_ATTRIBUTE_NORMAL,
-                                       NULL
-                                       );
-                    
-                    //Creaci梟 de token de validaci梟
-                    
-                    paquete paq2;
-                    token_limpieza(&paq2 ,'a');
-                    memcpy(cBytes, &paq2, sizeof(paq2));
-                    
-                    
-                    //Envia el paquete
-                    
-                    WriteFile( file2,
-                              cBytes, //cBytes, //bytes_a_enviar,
-                              16,//tam_img, //sizeof(cBytes), //(bytes_a_enviar),
-                              &written,
-                              NULL);
-					
-                    
-					
-                    CloseHandle(file2);  //Cierra la escritura
-                    
-                    
-					break;
+                    break;
                     
             	default:
             	{
@@ -324,7 +297,7 @@ void system_error(char *name) {
     LocalFree(ptr);
 }
 
-//Creaci梟 de token de validaci梟 1
+//Creaci贸n de token de validaci贸n 1
 
 void token_validacion(struct paquete *paq, char direccion){
     
@@ -344,7 +317,7 @@ bool propietario(char destino){
     return false;
 }
 
-// Funci梟 de envio de paquete independiente
+// Funci贸n de envio de paquete independiente
 void reenvio_paquete(struct paquete paq){
     
     DWORD read2, written2;
@@ -359,7 +332,7 @@ void reenvio_paquete(struct paquete paq){
                        NULL
                        );
     
-    //Creaci梟 de token de validaci梟
+    //Creaci贸n de token de validaci贸n
     
     memcpy(cBytes, &paq, sizeof(paq));
     
@@ -379,7 +352,7 @@ void reenvio_paquete(struct paquete paq){
 
 
 
-//Creaci梟 de ACK de red validada
+//Creaci贸n de ACK de red validada
 
 void ack_validado (struct paquete *paq){
     
@@ -390,7 +363,7 @@ void ack_validado (struct paquete *paq){
     
 }
 
-//Creaci梟 de token de descubrimiento 2
+//Creaci贸n de token de descubrimiento 2
 
 void token_descubrimiento(struct paquete *paq, char direccion){
     
@@ -401,7 +374,7 @@ void token_descubrimiento(struct paquete *paq, char direccion){
     
 }
 
-//Creaci梟 de token de publicacion 3  7 bytes
+//Creaci贸n de token de publicacion 3  7 bytes
 
 void token_publicacion(struct paquete *paq, char cantidad){
     
@@ -413,13 +386,13 @@ void token_publicacion(struct paquete *paq, char cantidad){
     
 }
 
-//Limpieza
 void token_limpieza(struct paquete *paq, char direccion){
     
     paq->tipo= '8';
     paq->org= direccion;
     paq->dest= direccion;
 }
+
 
 // Dar respuesta al paquete de lectura
 void respuesta(struct paquete message){
@@ -428,7 +401,7 @@ void respuesta(struct paquete message){
     
     //Depende del tipo de paquete / token
     switch (message.tipo) {
-        case '1': //Token de validaci梟
+        case '1': //Token de validaci贸n
             printf("Validacion");
             
             if (propietario(message.dest)) {
@@ -463,7 +436,7 @@ void respuesta(struct paquete message){
             }else{
                 printf("Nodos %i", message.contenido[0]- 96 );
                 nodos = message.contenido[0]- 96;
-                //Token de publicaci梟
+                //Token de publicaci贸n
                 
                 paquete tabla;
                 token_publicacion(&tabla,message.contenido[0]);
@@ -476,33 +449,28 @@ void respuesta(struct paquete message){
             break;
             
         case '3':
-            printf("Token de publicaci梟");
+            printf("Token de publicaci贸n");
             if (!propietario( message.dest)) {
                 nodos = message.contenido[0]- 96;
                 printf("Nodos %i", nodos);
                 reenvio_paquete(message);
             }else{
-                printf("Token de publicaci梟 terminado");
+                printf("Token de publicaci贸n terminado");
                 printf("Nodos %i", nodos);
             }
-            
-            
             
             break;
             
         case '8':
             printf("Token de limpieza");
             if (!propietario(message.dest)) {
-                printf("No es para mi");
-                //direccion='\0';
-                //reenvio_paquete(message);
+                direccion='\0';
+                reenvio_paquete(message);
             }else{
-                printf("Es para mi");
-//                direccion='\0';
+                direccion='\0';
             }
             
             break;
-
             
         case '9':
             printf("ACK recibido");

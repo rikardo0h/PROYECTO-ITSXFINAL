@@ -29,6 +29,7 @@ using namespace std;
 int main(int argc, char **argv) {
     
     /////// D E C L A R A C I O N E S     I N I C I A L E S
+    
         int ch;
         char buffer[16];
         HANDLE file;
@@ -247,13 +248,18 @@ bool propietario(char destino){
 // Dar respuesta al paquete de lectura
 void respuesta(struct paquete message){
     printf("En la funcion: %c %s %c %c \n", message.tipo , message.contenido ,message.org, message.dest);
+    
+    //Depende del tipo de paquete / token
     switch (message.tipo) {
-        case '1':
+        case '1': //Token de validaci—n
             printf("Validacion");
+            
             if (propietario(message.dest)) {
                 printf("Propio");
+                
             } else {
                 printf("Desconocio");
+                
             }
             break;
         case '2':

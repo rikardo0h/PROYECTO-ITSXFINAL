@@ -21,7 +21,7 @@ bool propietario(char destino);
 void reenvio_paquete(struct paquete paq);
 
 void token_validacion(struct paquete *paq, char direccion);
-
+void token_descubrimiento(struct paquete *paq, char direccion);
 
 
 //Variables del nodo
@@ -296,6 +296,18 @@ void ack_validado (struct paquete *paq){
     paq->org  = direccion;
     paq->dest = direccion;
     strcpy(paq->contenido, "1");
+    
+}
+
+//Creaci—n de token de descubrimiento 2
+
+void token_descubrimiento(struct paquete *paq, char direccion){
+    
+    paq->tipo= '2';
+    paq->org= direccion;
+    paq->dest= direccion;
+    strcpy(paq->contenido, direccion);
+    
     
 }
 

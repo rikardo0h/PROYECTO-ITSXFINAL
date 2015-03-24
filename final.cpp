@@ -21,6 +21,7 @@ bool propietario(char destino);
 void reenvio_paquete(struct paquete paq);
 
 void token_validacion(struct paquete *paq, char direccion);
+void token_descubrimiento(struct paquete *paq, char direccion);
 
 
 

@@ -313,9 +313,9 @@ void respuesta(struct paquete message){
                 validado = true;
                 /// ACK de red Validado
                 
-                paquete paq;
-                ack_validado(&paq);
-                reenvio_paquete(paq);
+               // paquete paq;
+               // ack_validado(&paq);
+               // reenvio_paquete(paq);
                 
                 
                 ///

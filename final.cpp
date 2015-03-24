@@ -250,7 +250,7 @@ void respuesta(struct paquete message){
     switch (message.tipo) {
         case '1':
             printf("Validacion");
-            if (propietario(message.tipo)) {
+            if (propietario(message.dest)) {
                 printf("Propio");
             } else {
                 printf("Desconocio");

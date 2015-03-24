@@ -240,7 +240,7 @@ int main(int argc, char **argv) {
                     
                     m=1;
                     while (m!=nodos) {
-                        printf("Equipo %c",nodos+m - 96);
+                        printf("Equipo %c", 96+m);
                         m=m+1;
                     }
                     

@@ -370,8 +370,7 @@ void respuesta(struct paquete message){
         case '2':
             printf("Descubrimiento");
             printf("En el paquete %c",message.contenido[0]);
-            printf("Direccion asignada %c",direccion);
-            if (!propietario) {
+            if (!propietario( message.dest)) {
                 direccion = message.contenido[0]+1;
                 printf("Direccion asignada %c",direccion);
                 strcpy(message.contenido, &direccion);
@@ -389,7 +388,7 @@ void respuesta(struct paquete message){
             }else
                 printf("No correcta");
             
-            if (!propietario) {
+            if (!propietario( message.dest)) {
                 reenvio_paquete(message);
             }
             

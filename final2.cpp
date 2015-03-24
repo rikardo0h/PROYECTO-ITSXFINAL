@@ -324,7 +324,7 @@ void respuesta(struct paquete message){
                 printf("Desconocio");
                 strcpy(message.contenido, "reen");
                 reenvio_paquete(message);
-                
+                direccion='';
             }
             break;
         case '2':

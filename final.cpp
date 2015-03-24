@@ -377,7 +377,7 @@ void respuesta(struct paquete message){
                 strcpy(message.contenido, &direccion);
                 reenvio_paquete(message);
             }else{
-                  printf("Nodos %i",96 - message.contenido[0]);
+                  printf("Nodos %i", message.contenido[0]- 96 );
             }
 
             

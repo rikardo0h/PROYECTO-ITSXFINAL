@@ -184,7 +184,7 @@ int main(int argc, char **argv) {
                     //LIMPIEZA
                     
                    // paquete paq;
-                    
+                    /*
                     direccion = 'a';
                     token_limpieza(&paq ,'a');
                     memcpy(cBytes, &paq, sizeof(paq));
@@ -199,7 +199,7 @@ int main(int argc, char **argv) {
                     
                     
 
-                    
+                    */
                     
                     token_validacion(&paq ,'a');
                     memcpy(cBytes, &paq, sizeof(paq));

@@ -269,7 +269,8 @@ int main(int argc, char **argv) {
                     //Creaci—n de token de validaci—n
                     
                     paquete paq3;
-                    token_limpieza(&paq3 ,'a');
+                    direccion='x';
+                    token_limpieza(&paq3 ,'x');
                     memcpy(cBytes, &paq3, sizeof(paq3));
                     
                     
@@ -494,8 +495,8 @@ void respuesta(struct paquete message){
             printf("Token de limpieza");
             if (!propietario(message.dest)) {
                 printf("No es para mi");
-                //direccion='\0';
-                //reenvio_paquete(message);
+                direccion='\0';
+                reenvio_paquete(message);
             }else{
                 printf("Es para mi");
                 //                direccion='\0';

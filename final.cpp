@@ -16,7 +16,7 @@ struct paquete {
 
 //F U N C I O N E S
 void system_error(char *name);
-void token_validacion(paquete paq, char direccion);
+void token_validacion(struct paquete *paq, char direccion);
 
 
 bool validado=false;
@@ -150,7 +150,7 @@ int main(int argc, char **argv) {
                         //Creaci—n de token de validaci—n
             		            		
                         paquete paq;
-                        token_validacion(paq ,'a');
+                        token_validacion(&paq ,'a');
                     
                         memcpy(cBytes, &paq, sizeof(paq));
                     
@@ -219,7 +219,7 @@ void system_error(char *name) {
 
 //Creaci—n de token de validaci—n
 
-void token_validacion(paquete paq, char direccion){
+void token_validacion(struct paquete *paq, char direccion){
     
     paq.tipo= '1';
     paq.org= direccion;

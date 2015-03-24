@@ -179,6 +179,27 @@ int main(int argc, char **argv) {
                     //Creaci—n de token de validaci—n
                     
                     paquete paq;
+                    
+                    //LIMPIEZA
+                    
+                    paquete paq;
+                    
+                    direccion = 'a';
+                    token_limpieza(&paq ,'a');
+                    memcpy(cBytes, &paq, sizeof(paq));
+                    
+                    
+                    
+                    WriteFile( file2,
+                              cBytes, //cBytes, //bytes_a_enviar,
+                              16,//tam_img, //sizeof(cBytes), //(bytes_a_enviar),
+                              &written,
+                              NULL);
+                    
+                    
+
+                    
+                    
                     token_validacion(&paq ,'a');
                     memcpy(cBytes, &paq, sizeof(paq));
                     

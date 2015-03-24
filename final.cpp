@@ -33,6 +33,7 @@ void reenvio_paquete(struct paquete paq);
 void token_validacion(struct paquete *paq, char direccion);
 void token_descubrimiento(struct paquete *paq, char direccion);
 void token_publicacion(struct paquete *paq, int cantidad);
+void token_limpieza(struct paquete *paq, char direccion);
 
 
 
@@ -176,10 +177,26 @@ int main(int argc, char **argv) {
                          NULL
                          );
                     
+                    //LIMPIEZA
+                    
+                    paquete paq;
+
+                    direccion = 'a';
+                    token_limpieza(&paq ,'a');
+                    memcpy(cBytes, &paq, sizeof(paq));
+                    
+                    
+                    
+                    WriteFile( file2,
+                              cBytes, //cBytes, //bytes_a_enviar,
+                              16,//tam_img, //sizeof(cBytes), //(bytes_a_enviar),
+                              &written,
+                              NULL);
+                    
+                    
+                    
                         //Creaci—n de token de validaci—n
-            		            		
-                        paquete paq;
-                        token_validacion(&paq ,'a');
+            		            		                        token_validacion(&paq ,'a');
                         memcpy(cBytes, &paq, sizeof(paq));
                     
     
@@ -191,7 +208,7 @@ int main(int argc, char **argv) {
                            &written,
                            NULL);
 					
-				
+                   
 					
                         CloseHandle(file2);  //Cierra la escritura
                         direccion = 'a';
@@ -380,6 +397,13 @@ void token_publicacion(struct paquete *paq, char cantidad){
     
 }
 
+void token_limpieza(struct paquete *paq, char direccion){
+    
+    paq->tipo= '8';
+    paq->org= direccion;
+    paq->dest= direccion;
+}
+
 
 // Dar respuesta al paquete de lectura
 void respuesta(struct paquete message){
@@ -446,6 +470,16 @@ void respuesta(struct paquete message){
                 printf("Nodos %i", nodos);
             }
             
+            break;
+            
+        case '8':
+             printf("Token de limpieza");
+            if (!propietario(message.dest)) {
+                direccion='\0';
+                reenvio_paquete(message);
+            }else{
+                direccion='\0';
+            }
             
             break;
         

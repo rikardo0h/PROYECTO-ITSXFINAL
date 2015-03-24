@@ -182,7 +182,7 @@ int main(int argc, char **argv) {
                     
                     //LIMPIEZA
                     
-                    paquete paq;
+                   // paquete paq;
                     
                     direccion = 'a';
                     token_limpieza(&paq ,'a');

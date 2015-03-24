@@ -28,11 +28,11 @@ void system_error(char *name);
 void respuesta(struct paquete message);
 bool propietario(char destino);
 void reenvio_paquete(struct paquete paq);
-void reenvio_tabla(struct direcciones paq);
+
 
 void token_validacion(struct paquete *paq, char direccion);
 void token_descubrimiento(struct paquete *paq, char direccion);
-void token_publicacion(struct direcciones *paq, int cantidad);
+void token_publicacion(struct paquete *paq, int cantidad);
 
 
 
@@ -326,39 +326,6 @@ void reenvio_paquete(struct paquete paq){
     
 }
 
-// Funci—n de envio de paquete independiente
-void reenvio_tabla(struct direcciones paq){
-    
-    DWORD read2, written2;
-    char cBytes[7];
-    HANDLE file2;
-    file2 = CreateFile( port_name2,
-                       GENERIC_READ | GENERIC_WRITE,
-                       0,
-                       NULL,
-                       OPEN_EXISTING,
-                       FILE_ATTRIBUTE_NORMAL,
-                       NULL
-                       );
-    
-    //Creaci—n de token de validaci—n
-    
-    memcpy(cBytes, &paq, sizeof(paq));
-    
-    
-    //Envia el paquete
-    
-    WriteFile( file2,
-              cBytes, //cBytes, //bytes_a_enviar,
-              7,//tam_img, //sizeof(cBytes), //(bytes_a_enviar),
-              &written2,
-              NULL);
-    
-    
-    CloseHandle(file2);  //Cierra la escritura
-    
-    
-}
 
 
 //Creaci—n de ACK de red validada
@@ -385,12 +352,12 @@ void token_descubrimiento(struct paquete *paq, char direccion){
 
 //Creaci—n de token de publicacion 3  7 bytes
 
-void token_publicacion(struct direcciones *paq, int cantidad){
+void token_publicacion(struct paquete *paq, char cantidad){
     
     paq->tipo= '3';
     paq->org= direccion;
     paq->dest= direccion;
-    paq->cant=cantidad;
+    strcpy(paq->contenido, &cantidad);
 
     
 }
@@ -439,11 +406,10 @@ void respuesta(struct paquete message){
                 
                 //Token de publicaci—n
                 
-                    direcciones tabla;
-                    token_publicacion(&tabla,message.contenido[0]- 96 );
-                    reenvio_tabla(tabla);
+                    paquete tabla;
+                    token_publicacion(&tabla,message.contenido[0]);
+                    reenvio_paquete(tabla);
 
-                
                 //token de publicacion
                 
             }
@@ -452,8 +418,14 @@ void respuesta(struct paquete message){
             
         case '3':
             printf("Token de publicaci—n");
-            nodos = message.cant;
-            printf("Nodos %i", nodos);
+            if (!propietario( message.dest)) {
+                printf("Nodos %i", message.contenido[0]- 96 );
+                nodos = message.contenido[0]- 96;
+                reenvio_paquete(message);
+            }else{
+                printf("Token de publicaci—n terminado");
+            }
+            
             
             break;
         

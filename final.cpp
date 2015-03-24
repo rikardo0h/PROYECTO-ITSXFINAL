@@ -234,9 +234,11 @@ int main(int argc, char **argv) {
 										
             		break;
             	case 51:
-            		printf("Token disponibilidad \n");            		
-
+                    printf("Consultar tabla \n");
+                    printf("Nodos %i", nodos );
+                    
 					break;
+                    
             	default: 
             	{
                     printf("Salida \n");

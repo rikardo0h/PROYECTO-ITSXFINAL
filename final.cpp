@@ -14,14 +14,25 @@ struct paquete {
     char dest;              //Direccion destino
 };
 
+struct direcciones {
+    char tipo;              //Tipo de paquete o token
+    int  cant;              //Cantidad
+    char org;               //Direccion origen
+    char dest;              //Direccion destino
+};
+
+
+
 //F U N C I O N E S
 void system_error(char *name);
 void respuesta(struct paquete message);
 bool propietario(char destino);
 void reenvio_paquete(struct paquete paq);
+void reenvio_tabla(struct direcciones paq);
 
 void token_validacion(struct paquete *paq, char direccion);
 void token_descubrimiento(struct paquete *paq, char direccion);
+void token_publicacion(struct direcciones *paq, int cantidad);
 
 
 
@@ -282,7 +293,6 @@ bool propietario(char destino){
 
 // Funci—n de envio de paquete independiente
 void reenvio_paquete(struct paquete paq){
-    
 
     DWORD read2, written2;
     char cBytes[16];
@@ -311,9 +321,43 @@ void reenvio_paquete(struct paquete paq){
     
     
     CloseHandle(file2);  //Cierra la escritura
-
     
 }
+
+// Funci—n de envio de paquete independiente
+void reenvio_tabla(struct direcciones paq){
+    
+    DWORD read2, written2;
+    char cBytes[7];
+    HANDLE file2;
+    file2 = CreateFile( port_name2,
+                       GENERIC_READ | GENERIC_WRITE,
+                       0,
+                       NULL,
+                       OPEN_EXISTING,
+                       FILE_ATTRIBUTE_NORMAL,
+                       NULL
+                       );
+    
+    //Creaci—n de token de validaci—n
+    
+    memcpy(cBytes, &paq, sizeof(paq));
+    
+    
+    //Envia el paquete
+    
+    WriteFile( file2,
+              cBytes, //cBytes, //bytes_a_enviar,
+              7,//tam_img, //sizeof(cBytes), //(bytes_a_enviar),
+              &written2,
+              NULL);
+    
+    
+    CloseHandle(file2);  //Cierra la escritura
+    
+    
+}
+
 
 //Creaci—n de ACK de red validada
 
@@ -334,6 +378,18 @@ void token_descubrimiento(struct paquete *paq, char direccion){
     paq->org= direccion;
     paq->dest= direccion;
     strcpy(paq->contenido, &direccion);
+    
+}
+
+//Creaci—n de token de publicacion 3  7 bytes
+
+void token_publicacion(struct direcciones *paq, int cantidad){
+    
+    paq->tipo= '3';
+    paq->org= direccion;
+    paq->dest= direccion;
+    paq->cantidad=cantidad;
+
     
 }
 
@@ -378,6 +434,16 @@ void respuesta(struct paquete message){
                 reenvio_paquete(message);
             }else{
                   printf("Nodos %i", message.contenido[0]- 96 );
+                
+                //Token de publicaci—n
+                
+                    direcciones tabla;
+                    token_publicacion(&tabla,message.contenido[0]- 96 );
+                    reenvio_tabla(tabla);
+
+                
+                //token de publicacion
+                
             }
 
             

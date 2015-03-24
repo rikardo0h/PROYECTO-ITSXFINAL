@@ -33,6 +33,7 @@ void reenvio_paquete(struct paquete paq);
 void token_validacion(struct paquete *paq, char direccion);
 void token_descubrimiento(struct paquete *paq, char direccion);
 void token_publicacion(struct paquete *paq, int cantidad);
+void token_limpieza(struct paquete *paq, char direccion);
 
 
 

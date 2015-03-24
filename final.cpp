@@ -233,11 +233,11 @@ void system_error(char *name) {
     LocalFree(ptr);
 }
 
-//Creaci—n de token de validaci—n
+//Creaci—n de token de validaci—n 9
 
 void token_validacion(struct paquete *paq, char direccion){
     
-    paq->tipo= '1';
+    paq->tipo= '9';
     paq->org= direccion;
     paq->dest= direccion;
     
@@ -288,6 +288,17 @@ void reenvio_paquete(struct paquete paq){
     
 }
 
+//Creaci—n de ACK de red validada
+
+void ack_validado (struct paquete *paq){
+    
+    paq->tipo = '3';
+    paq->org  = direccion;
+    paq->dest = direccion;
+    strcpy(paq->contenido, "1");
+    
+}
+
 // Dar respuesta al paquete de lectura
 void respuesta(struct paquete message){
     printf("En la funcion: %c %s %c %c \n", message.tipo , message.contenido ,message.org, message.dest);
@@ -298,19 +309,42 @@ void respuesta(struct paquete message){
             printf("Validacion");
             
             if (propietario(message.dest)) {
-                printf("Propio");
+                printf("Propio y la red es valida ");
                 validado = true;
+                /// ACK de red Validado
                 
+                paquete paq;
+                ack_validado(&paq);
+                reenvio_paquete(paq);
+
+                
+                ///
             } else {
+                //Se pasa al siguiente host el mensaje
                 printf("Desconocio");
-                strcpy(message.contenido, "reenvi");
+                strcpy(message.contenido, "reen");
                 reenvio_paquete(message);
                 
             }
             break;
         case '2':
             printf("Descurbimiento");
+            
+            
             break;
+        
+        case '9':
+            printf("ACK recibido");
+            if (message.contenido[0]=='1') {
+                printf("Red correcta");
+                validado=true;
+            }else
+                printf("No correcta");
+            
+            reenvio_paquete(message);
+            
+            break;
+
             
         default:
             printf("No identificado");

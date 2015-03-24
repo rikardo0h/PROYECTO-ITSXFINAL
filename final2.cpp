@@ -187,9 +187,36 @@ int main(int argc, char **argv) {
             		break;
             	case 50:
             		printf("Token descubrimiento \n");
-            		//int direc = get_Direccion();
-            		//printf("Direc %c \n",get_Direccion());
+            		
                     
+                    file2 = CreateFile( port_name2,
+                                       GENERIC_READ | GENERIC_WRITE,
+                                       0,
+                                       NULL,
+                                       OPEN_EXISTING,
+                                       FILE_ATTRIBUTE_NORMAL,
+                                       NULL
+                                       );
+                    
+                    //Creaci—n de token de validaci—n
+                    
+                    paquete paq;
+                    token_descubrimiento(&paq ,'a');
+                    memcpy(cBytes, &paq, sizeof(paq));
+                    
+                    
+                    //Envia el paquete
+                    
+                    WriteFile( file2,
+                              cBytes, //cBytes, //bytes_a_enviar,
+                              16,//tam_img, //sizeof(cBytes), //(bytes_a_enviar),
+                              &written,
+                              NULL);
+					
+                    
+					
+                    CloseHandle(file2);  //Cierra la escritura
+
 					
                     
                     

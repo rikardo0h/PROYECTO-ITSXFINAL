@@ -397,6 +397,13 @@ void token_publicacion(struct paquete *paq, char cantidad){
     
 }
 
+//Limpieza
+void token_limpieza(struct paquete *paq, char direccion){
+    
+    paq->tipo= '8';
+    paq->org= direccion;
+    paq->dest= direccion;
+}
 
 // Dar respuesta al paquete de lectura
 void respuesta(struct paquete message){

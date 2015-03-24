@@ -235,7 +235,13 @@ int main(int argc, char **argv) {
             		break;
             	case 51:
                     printf("Consultar tabla \n");
-                     printf("Nodos %i", nodos );
+                     printf("Cantidad de Nodos totales en la red:  %i", nodos );
+                    
+                    int m=0;
+                    while (m<nodos) {
+                        printf("Equipo %c",(char)nodos+m);
+                        m=m+1;
+                    }
                     
 					break;
             	default:

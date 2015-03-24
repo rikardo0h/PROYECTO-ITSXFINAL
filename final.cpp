@@ -17,13 +17,21 @@ struct paquete {
 //F U N C I O N E S
 void system_error(char *name);
 void respuesta(struct paquete message);
-
 bool propietario(char destino);
+void reenvio_paquete(struct paquete paq);
+
 void token_validacion(struct paquete *paq, char direccion);
 
 
+
+//Variables del nodo
 bool validado=false;
 char direccion;
+
+//Variables de puertos
+char port_name[128] = "\\\\.\\COM4";    // Puerto de  L E C T U R A
+char port_name2[128] = "\\\\.\\COM1";     // Puerto de E S C R I T U R A
+
 
 using namespace std;
 int main(int argc, char **argv) {
@@ -39,14 +47,13 @@ int main(int argc, char **argv) {
         HANDLE keyboard = GetStdHandle(STD_INPUT_HANDLE);
         HANDLE screen = GetStdHandle(STD_OUTPUT_HANDLE);
         DWORD mode;
-        char port_name[128] = "\\\\.\\COM4";    // Puerto de  L E C T U R A
-        char init[] = "";
+                char init[] = "";
 
 
         char buffer2[1];
         HANDLE file2;				    
         DWORD read2, written2;				    				    
-        char port_name2[128] = "\\\\.\\COM1";     // Puerto de E S C R I T U R A
+    
 		
     /////////////////////////
     
@@ -174,6 +181,7 @@ int main(int argc, char **argv) {
 					
                         CloseHandle(file2);  //Cierra la escritura
                         direccion = 'a';
+                        validado = false
 							
             		break;
             	case 50:
@@ -245,6 +253,41 @@ bool propietario(char destino){
     return false;
 }
 
+// Funci—n de envio de paquete independiente
+void reenvio_paquete(struct paquete paq){
+    
+
+    DWORD read2, written2;
+    char cBytes[16];
+    
+    file2 = CreateFile( port_name2,
+                       GENERIC_READ | GENERIC_WRITE,
+                       0,
+                       NULL,
+                       OPEN_EXISTING,
+                       FILE_ATTRIBUTE_NORMAL,
+                       NULL
+                       );
+    
+    //Creaci—n de token de validaci—n
+    
+    memcpy(cBytes, &paq, sizeof(paq));
+    
+    
+    //Envia el paquete
+    
+    WriteFile( file2,
+              cBytes, //cBytes, //bytes_a_enviar,
+              16,//tam_img, //sizeof(cBytes), //(bytes_a_enviar),
+              &written2,
+              NULL);
+    
+    
+    CloseHandle(file2);  //Cierra la escritura
+
+    
+}
+
 // Dar respuesta al paquete de lectura
 void respuesta(struct paquete message){
     printf("En la funcion: %c %s %c %c \n", message.tipo , message.contenido ,message.org, message.dest);
@@ -256,9 +299,11 @@ void respuesta(struct paquete message){
             
             if (propietario(message.dest)) {
                 printf("Propio");
+                validado = true;
                 
             } else {
                 printf("Desconocio");
+                reenvio_paquete(message);
                 
             }
             break;

@@ -172,6 +172,7 @@ int main(int argc, char **argv) {
 				
 					
                         CloseHandle(file2);  //Cierra la escritura
+                        direccion = 'a';
 							
             		break;
             	case 50:

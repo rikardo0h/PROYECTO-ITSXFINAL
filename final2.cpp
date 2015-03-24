@@ -563,7 +563,7 @@ void respuesta(struct paquete message){
                 
                 ///
             } else {
-                if (!propietario(message.origen)) {
+                if (!propietario(message.org)) {
                     printf("Desconocio");
                     reenvio_paquete(message);
                 }

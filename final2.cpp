@@ -474,6 +474,18 @@ void respuesta(struct paquete message){
             
             break;
             
+        case '8':
+            printf("Token de limpieza");
+            if (!propietario(message.dest)) {
+                direccion='\0';
+                reenvio_paquete(message);
+            }else{
+                direccion='\0';
+            }
+            
+            break;
+
+            
         case '9':
             printf("ACK recibido");
             if (message.contenido[0]==49) {

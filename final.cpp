@@ -183,8 +183,8 @@ int main(int argc, char **argv) {
 
                     
                     // paquete paq;
-                    direccion= 'x';
-                    token_limpieza(&paq ,'x');
+                    direccion= 'a';
+                    token_limpieza(&paq ,'a');
                     memcpy(cBytes, &paq, sizeof(paq));
                     
                     

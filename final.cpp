@@ -196,7 +196,7 @@ int main(int argc, char **argv) {
                               NULL);
                     
                     
-
+                        CloseHandle(file2);  //Cierra la escritura
                     
                         //Creaci—n de token de validaci—n
                         token_validacion(&paq ,'a');
@@ -232,6 +232,9 @@ int main(int argc, char **argv) {
                                        NULL
                                        );
                     
+                    
+					
+
                     //Creaci—n de token de validaci—n
                     
                     paquete paq2;

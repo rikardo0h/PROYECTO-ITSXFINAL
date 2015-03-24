@@ -16,8 +16,10 @@ struct paquete {
 
 //F U N C I O N E S
 void system_error(char *name);
-void token_validacion(struct paquete *paq, char direccion);
 void respuesta(struct paquete message);
+
+bool propietario(char destino);
+void token_validacion(struct paquete *paq, char direccion);
 
 
 bool validado=false;
@@ -232,12 +234,26 @@ void token_validacion(struct paquete *paq, char direccion){
 
 }
 
+// Propietario del token
+
+bool propietario(char destino){
+    if (destino == direccion) {
+        return true;
+    }
+    return false;
+}
+
 // Dar respuesta al paquete de lectura
 void respuesta(struct paquete message){
     printf("En la funcion: %c %s %c %c \n", message.tipo , message.contenido ,message.org, message.dest);
     switch (message.tipo) {
         case '1':
-            printf("Validaci—n");
+            printf("Validacion");
+            if (propietario(message.tipo)) {
+                printf("Propio");
+            } else {
+                printf("Desconocio");
+            }
             break;
         case '2':
             printf("Descurbimiento");

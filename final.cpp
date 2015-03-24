@@ -369,10 +369,13 @@ void respuesta(struct paquete message){
             break;
         case '2':
             printf("Descubrimiento");
-            direccion = message.contenido[0]+1;
-            strcpy(message.contenido, &direccion);
-            reenvio_paquete(message);
-            
+            if (!propietario) {
+                direccion = message.contenido[0]+1;
+                printf("Direccion asignada %c",direccion);
+                strcpy(message.contenido, &direccion);
+                reenvio_paquete(message);
+            }
+
             
             break;
         

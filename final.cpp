@@ -196,8 +196,8 @@ int main(int argc, char **argv) {
                               NULL);
                     
                     
-                        CloseHandle(file2);  //Cierra la escritura
-                    
+                        
+                        direccion = 'a';
                         //Creaci—n de token de validaci—n
                         token_validacion(&paq ,'a');
                         memcpy(cBytes, &paq, sizeof(paq));

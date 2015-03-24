@@ -197,7 +197,6 @@ int main(int argc, char **argv) {
                               NULL);
                     
                     
-                    CloseHandle(file2);  //Cierra la escritura
                     
                     direccion = 'a';
                     token_validacion(&paq ,'a');

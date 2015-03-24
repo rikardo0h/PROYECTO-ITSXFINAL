@@ -238,9 +238,10 @@ int main(int argc, char **argv) {
                     printf("Consultar tabla \n");
                      printf("Cantidad de Nodos totales en la red:  %i \n", nodos );
                     
-                    m=0;
-                    while (m<nodos) {
-                        printf("Equipo %c",(char)nodos+m - 96);
+                    
+                    m=1;
+                    while (m!=nodos) {
+                        printf("Equipo %c",nodos+m - 96);
                         m=m+1;
                     }
                     

@@ -369,6 +369,7 @@ void respuesta(struct paquete message){
             break;
         case '2':
             printf("Descubrimiento");
+            printf("En el paquete %c",message.contenido[0]);
             printf("Direccion asignada %c",direccion);
             if (!propietario) {
                 direccion = message.contenido[0]+1;

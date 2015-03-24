@@ -419,12 +419,14 @@ void respuesta(struct paquete message){
         case '3':
             printf("Token de publicaci—n");
             if (!propietario( message.dest)) {
-                printf("Nodos %i", message.contenido[0]- 96 );
                 nodos = message.contenido[0]- 96;
+                printf("Nodos %i", nodos);
                 reenvio_paquete(message);
             }else{
                 printf("Token de publicaci—n terminado");
+                printf("Nodos %i", nodos);
             }
+            
             
             
             break;

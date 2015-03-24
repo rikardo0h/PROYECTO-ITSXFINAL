@@ -370,11 +370,14 @@ void respuesta(struct paquete message){
         case '2':
             printf("Descubrimiento");
             printf("En el paquete %c",message.contenido[0]);
+            // A S I G N A   N O M B R E   AL  N O D O
             if (!propietario( message.dest)) {
                 direccion = message.contenido[0]+1;
                 printf("Direccion asignada %c",direccion);
                 strcpy(message.contenido, &direccion);
                 reenvio_paquete(message);
+            }else{
+                printf("Nodos %c",97 - message.contenido[0]);
             }
 
             

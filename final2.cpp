@@ -375,7 +375,10 @@ void respuesta(struct paquete message){
                 printf("Direccion asignada %c",direccion);
                 strcpy(message.contenido, &direccion);
                 reenvio_paquete(message);
+            }else{
+                printf("Nodos %c",97 - message.contenido[0]);
             }
+            
             
             
             break;

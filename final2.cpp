@@ -241,7 +241,7 @@ int main(int argc, char **argv) {
                     
                     m=0;
                     while ( m < nodos) {
-                        printf("Equipo %c", 96+m);
+                        printf("Equipo %c \n", 97+m);
                         m=m+1;
                     }
 

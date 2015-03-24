@@ -236,15 +236,24 @@ int main(int argc, char **argv) {
             		break;
             	case 51:
                     printf("Consultar tabla \n");
-                     printf("Cantidad de Nodos totales en la red: %i \n", nodos );
+                    printf("Cantidad de Nodos totales en la red: %i \n", nodos );
                     
                     m=0;
                     while ( m < nodos) {
-                        printf("Equipo %c \n ", 97+m);
+                        printf("Equipo %c\n ", 97+m);
+                        if (direccion == 97+m) {
+                            printf("<<<<<  \n ");
+                        }else
+                            printf("\n");
                         m=m+1;
                     }
                     
 					break;
+                 
+            	case 52:
+                    printf("Token de disponibilidad \n");
+                    
+                    break;
                     
             	default: 
             	{

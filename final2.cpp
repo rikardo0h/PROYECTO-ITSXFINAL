@@ -295,6 +295,7 @@ int main(int argc, char **argv) {
                 case 53:
                     
                     printf("Token disponibilidad \n");
+                    printf("Resultado del ping anterior: %i \n",ping);
             		
                     ping=false;
                     

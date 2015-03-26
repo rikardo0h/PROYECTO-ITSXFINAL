@@ -46,8 +46,8 @@ char recibido [117];
 int partes=0;
 
 //Variables de puertos
-char port_name[128] = "\\\\.\\COM2";    // Puerto de  L E C T U R A
-char port_name2[128] = "\\\\.\\COM3";     // Puerto de E S C R I T U R A
+char port_name[128] = "\\\\.\\COM6";    // Puerto de  L E C T U R A
+char port_name2[128] = "\\\\.\\COM1";     // Puerto de E S C R I T U R A
 
 
 using namespace std;
@@ -466,20 +466,22 @@ int main(int argc, char **argv) {
 					  }
 					  if(entre){
 					  	//printf("\n hi");
+					  	char repo[13];
 					  	contador++;
 					  	ay=0;					  	
 					  	while(ay<corte){
-					  		printf("%c \n",paq_parte[ay]);					  								  			
-					  		//paq_parte[corte]=cadena[aux+ay];
+					  		//printf("%c \n",paq_parte[ay]);					  								  			
+					  		repo[ay]=paq_parte[ay];
 					  		//printf("%c",cadena[aux+ay]);					  								  			
 					  		ay++;
 						  }
 						  //Envio
-						  printf("Palabra %i %s \n",contador,paq_parte);					  								  			
-						  paquete_texto(&paq5 ,ch, paq_parte);
+						  printf("Palabra %i %s \n",contador,repo);					  								  			
+						  paquete_texto(&paq5 ,ch, repo);
 	                      memcpy(cBytes, &paq5, sizeof(paq5));                    
 	                     WriteFile( file2, cBytes, 16,&written,NULL);
-	                  
+	                memset(paq_parte, 0, 13);
+					(paq_parte, 0, 13);  	  
 					  }
 					  	
 						  			//paquete_texto(&paq5 ,ch, paq_parte);
@@ -494,6 +496,7 @@ int main(int argc, char **argv) {
                     CloseHandle(file2);  //Cierra la escritura					                	
                     memset(paq_parte, 0, 13);
 					(paq_parte, 0, 13);  	
+					
 					
                     memset(cadena, 0, 117);
 					(cadena, 0, 117);  	

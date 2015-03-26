@@ -32,7 +32,8 @@ void ack_disponible(struct paquete *paq, char destino);
 void token_disponibilidad(struct paquete *paq, char destino);
 
 //void token_inicio(struct paquete *paq,int cantidad);
-void token_inicio(struct paquete *paq, char cantidad);
+void token_inicio(struct paquete *paq,char destino, char cantidad);
+void paquete_texto(struct paquete *paq,char destino, char parte[]);
 
 
 //Variables del nodo
@@ -45,8 +46,8 @@ char recibido [117];
 int partes=0;
 
 //Variables de puertos
-char port_name[128] = "\\\\.\\COM2";    // Puerto de  L E C T U R A
-char port_name2[128] = "\\\\.\\COM4";     // Puerto de E S C R I T U R A
+char port_name[128] = "\\\\.\\COM4";    // Puerto de  L E C T U R A
+char port_name2[128] = "\\\\.\\COM5";     // Puerto de E S C R I T U R A
 
 
 using namespace std;
@@ -144,18 +145,21 @@ int main(int argc, char **argv) {
     int corte=0;
     int partes_enviar=0;
     int contador=0;
+    char to;
+    bool entre;
+    int aux,ay;
     /////////////////////////
     
     /////// M E N U
     	system("cls");
     	
 		printf(" M E N U    G E N E R A L \n");
-    	printf("1.- Validar red \n");
-	    printf("2.- Descubrir nodos \n");
-	    printf("3.- Ping a nodo \n");
-	    printf("4.- Envio de texto \n");
-	    printf("5.- Borrar configuracion \n");        
-    	
+	    	printf("1.- Token de validacion \n");
+	        printf("2.- Token de descubrimiento \n");
+	        printf("3.- Consulta de tabla \n");
+	        printf("4.- Limpieza \n");
+	        printf("5.- Disponibilidad \n");        
+	        printf("6.- Envio de texto \n");        
     	
     	//////// M E N U
     
@@ -176,21 +180,21 @@ int main(int argc, char **argv) {
             respuesta(message);
             printf("Preciona para continuar \n");
         }
-        
-        
-        ///////
+                
+    	///////
         
         if ( kbhit() ) {
-        	ch = getch();
+        	getch();
         	//menuu
         	
         	system("cls");			    	    	    	
 			printf(" M E N U    G E N E R A L \n");
-	    	printf("1.- Validar red \n");
-	        printf("2.- Descubrir nodos \n");
-	        printf("3.- Ping a nodo \n");
-	        printf("4.- Envio de texto \n");
-	        printf("5.- Borrar configuracion \n");        
+	    	printf("1.- Token de validacion \n");
+	        printf("2.- Token de descubrimiento \n");
+	        printf("3.- Consulta de tabla \n");
+	        printf("4.- Limpieza \n");
+	        printf("5.- Disponibilidad \n");        
+	        printf("6.- Envio de texto \n");              
 	        
 	        printf("Indica la opcion: \n");
 	        
@@ -327,6 +331,12 @@ int main(int argc, char **argv) {
                     printf("Token disponibilidad \n");
                     printf("Resultado del ping anterior: %i \n",ping);            		
                     ping=false;
+                    printf("Para: ");
+                    //to = getchar();
+                    //scanf("%c", &to);
+                    
+                    while (((to = getchar()) != '\n' && to != EOF)&&(ch=to));
+                    printf("Para: %c ",ch);
                     
                     file2 = CreateFile( port_name2,
                                        GENERIC_READ | GENERIC_WRITE,
@@ -340,26 +350,17 @@ int main(int argc, char **argv) {
                     //Creaci—n de token de validaci—n
                     
                     paquete paq4;
-                    
-                    ch = getch();
-                    
+                    //to = getchar();
                     token_disponibilidad(&paq4 ,ch);
+                    printf("Bytes  %i",sizeof(paq4));
                     memcpy(cBytes, &paq4, sizeof(paq4));
-                    
-                    
                     //Envia el paquete
-                    
                     WriteFile( file2,
                               cBytes, //cBytes, //bytes_a_enviar,
                               16,//tam_img, //sizeof(cBytes), //(bytes_a_enviar),
                               &written,
                               NULL);
-					
-                    
-					
-                    CloseHandle(file2);  //Cierra la escritura
-                    
-                    
+					CloseHandle(file2);  //Cierra la escritura
                     break;
                     
                 case 54:
@@ -368,25 +369,23 @@ int main(int argc, char **argv) {
                 	printf("Max 200 caracteres \n");
                 	  
 					  char cadena [117];
+					  char paq_parte [13];
+					  
+					  memset(cadena, 0, 117);
+					(cadena, 0, 117);  	
+					
 					  printf ("Introduzca una cadena: ");
 					  fgets (cadena, 117, stdin);
 					  printf ("La cadena leida es: %s \n", cadena);
-					  printf ("Lectura \n");
-					  corte=0;
-					  contador=0;
-					  partes_enviar=1;
-					  while((corte<117)&&(cadena[corte]!='\n')){					  		
-					  		printf("%c",cadena[corte]);
-					  		if(contador==12){
-					  			printf("\n");
-					  			partes_enviar=partes_enviar+1;
-					  			contador=0;
-							  }
-							contador=contador+1;  
-					  		corte=corte+1;
-					  }
-					  limpiar(cadena);
-                	///////////77
+					  					  					  					  					  
+					  
+					  
+                    printf("Para: ");                    
+                    while (((to = getchar()) != '\n' && to != EOF)&&(ch=to));
+                    printf("Para: %c ",ch);
+                    
+                    paquete paq5;
+                    
                 	file2 = CreateFile( port_name2,
                                        GENERIC_READ | GENERIC_WRITE,
                                        0,
@@ -396,26 +395,108 @@ int main(int argc, char **argv) {
                                        NULL
                                        );
                     
-                    //Creaci—n de token de validaci—n
-                    
-                    paquete paq5;
-                    token_inicio(&paq5 ,partes_enviar);
-                    memcpy(cBytes, &paq5, sizeof(paq5));
-                    
-                    
-                    //Envia el paquete
-                    
-                    WriteFile( file2,
-                              cBytes, //cBytes, //bytes_a_enviar,
-                              16,//tam_img, //sizeof(cBytes), //(bytes_a_enviar),
-                              &written,
-                              NULL);
+					  //////////
+					  						  			
+					//Ccantidad d paquetes
+					  contador=0;
+					  corte=0;
+					  	//printf ("_D_D_D_D_D \n ");
+					  	entre=false;
+					  for(int aux=0; cadena[aux]!='\n';aux++,corte++){					  						  	
+					  	   if(corte<13){
+					  //	   		printf("%c",cadena[corte]);					  								  			
+					  	   		entre=true;
+							 }
+							 if(corte==13){
+							 	contador++;
+						//	 	printf ("\n");
+							 	corte=0;
+								 aux--;							 		
+								 entre=false;
+							} 
+					  }
+					  if(entre){
+					  	contador++;
+					  }
+					  
+
+						printf ("\n SE ENVIARAN  %i  paquetes \n", contador );		
+						  						
+					  ///Envio de cuentas partes
+						token_inicio(&paq5 ,ch, contador);
+	                	memcpy(cBytes, &paq5, sizeof(paq5));                    
+	                	WriteFile( file2, cBytes, 16,&written,NULL);
+	                	
+					 	////////ENVIO DEL PAQUETE
+						 
+						 //Ccantidad d paquetes
+					contador=0;
+					corte=0;
+					//printf ("VERIFICAR \n ");
+					entre=false;
 					
+					
+					
+					memset(paq_parte, 0, 13);
+					(paq_parte, 0, 13);  	
+					  	
+					  	
+					  for(aux=0; cadena[aux]!='\n';aux++,corte++){					  						  	
+					  	   if(corte<13){					  	   		
+					  	   		//printf("%c",cadena[aux]);					  								  			
+								paq_parte[corte]=cadena[aux];								
+					  	   		entre=true;					  	   							  	   		
+							 }
+							 if(corte==13){
+							 	//Envio
+							 	printf("Palabra %i %s \n",contador,paq_parte);					  								  			
+					  	   		paquete_texto(&paq5 ,ch, paq_parte);
+	                    		memcpy(cBytes, &paq5, sizeof(paq5));                    
+	                    		WriteFile( file2, cBytes, 16,&written,NULL);
+	                
+				                memset(paq_parte, 0, 13);
+								(paq_parte, 0, 13);  	
+	                    		
+	//						 	printf("\n");
+							 	contador++;							 	
+							 	corte=0;
+								aux--;							 		
+								entre=false;
+							} 
+					  }
+					  if(entre){
+					  	//printf("\n hi");
+					  	contador++;
+					  	ay=0;					  	
+					  	while(ay<corte){
+					  		printf("%c \n",paq_parte[ay]);					  								  			
+					  		//paq_parte[corte]=cadena[aux+ay];
+					  		//printf("%c",cadena[aux+ay]);					  								  			
+					  		ay++;
+						  }
+						  //Envio
+						  printf("Palabra %i %s \n",contador,paq_parte);					  								  			
+						  paquete_texto(&paq5 ,ch, paq_parte);
+	                      memcpy(cBytes, &paq5, sizeof(paq5));                    
+	                     WriteFile( file2, cBytes, 16,&written,NULL);
+	                  
+					  }
+					  	
+						  			//paquete_texto(&paq5 ,ch, paq_parte);
+	                    			//memcpy(cBytes, &paq5, sizeof(paq5));                    
+	                    			//WriteFile( file2, cBytes, 16,&written,NULL);
+	                 
+					
+					  
+                	///////////77                	                	                                                            					
                     
 					
-                    CloseHandle(file2);  //Cierra la escritura
+                    CloseHandle(file2);  //Cierra la escritura					                	
+                    memset(paq_parte, 0, 13);
+					(paq_parte, 0, 13);  	
 					
-                	
+                    memset(cadena, 0, 117);
+					(cadena, 0, 117);  	
                 	//////
 					break;
                     
@@ -493,8 +574,7 @@ void reenvio_paquete(struct paquete paq){
     //Creaci—n de token de validaci—n
     
     memcpy(cBytes, &paq, sizeof(paq));
-    
-    
+        
     //Envia el paquete
     
     WriteFile( file2,
@@ -637,8 +717,19 @@ void respuesta(struct paquete message){
             break;
             
         case '4':
-            printf("Token disponibilidad");
-            
+            printf("Token disponibilidad");             
+            /*
+            if(!propietario(message.org)){
+            	if(propietario(message.dest)){
+            		printf("Preguntan por mi");            		
+            		paquete disponible;
+                	ack_disponible(&disponible,message.org);
+                	reenvio_paquete(disponible);
+				}else{
+					reenvio_paquete(message);
+				}
+			}
+            */
             if (propietario(message.dest)) {
                 printf("Propio y lo encontre ");
                 /// ACK de host disponible
@@ -655,6 +746,7 @@ void respuesta(struct paquete message){
                 }
                 
             }
+            
             break;
             
         case '5':
@@ -706,14 +798,32 @@ void respuesta(struct paquete message){
             
             break;
 		
-		//Recibir texto			                        
-		
+		//Recibir texto			                        		
         case 'a':
-        		printf("Inicio de lectura \n");
-        		printf("%i",message.contenido[0]);
-        		partes = message.contenido[0];
-        		 printf("Resultado %i",partes);
-            break;
+        		if (!propietario( message.dest)) {
+                	reenvio_paquete(message);
+            	}else{
+	            	printf("Inicio de lectura \n");
+	        		printf("%i",message.contenido[0]);
+	        		partes = message.contenido[0];
+	        		printf("Resultado %i \n",partes);	
+				}        		
+        break;
+        
+        //Recibir paquete del texto
+        case 'b':
+        		if (!propietario( message.dest)) {
+                	reenvio_paquete(message);
+            	}else{
+	            	printf("Parte a recibir \n");
+	            	partes = partes-1;
+	            	printf("Faltantes=  %i \n",partes);		        		
+					printf("Paquete:  %s \n ",message.contenido);	
+					if(partes==0){
+						printf("Terminado \n");	
+					}        		
+				}        		
+        break;
                                     
             
         default:
@@ -735,10 +845,17 @@ void limpiar (char *cadena)
 
 //Token de inicio
 //void token_publicacion(struct paquete *paq, char cantidad){
-void token_inicio(struct paquete *paq, char cantidad){    
+void token_inicio(struct paquete *paq,char destino, char cantidad){    
     paq->tipo= 'a';
     paq->org= direccion;
-    paq->dest= direccion;
+    paq->dest= destino;
     strcpy(paq->contenido, &cantidad);
+}
+
+void paquete_texto(struct paquete *paq,char destino, char parte[]){    
+    paq->tipo= 'b';
+    paq->org= direccion;
+    paq->dest= destino;
+    strcpy(paq->contenido, parte);
 }
 

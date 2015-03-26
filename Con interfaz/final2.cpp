@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <conio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <string>
 #define STRICT
 #define WIN32_LEAN_AND_MEAN
@@ -21,7 +22,7 @@ void system_error(char *name);
 void respuesta(struct paquete message);
 bool propietario(char destino);
 void reenvio_paquete(struct paquete paq);
-
+void limpiar (char *cadena);
 
 void token_validacion(struct paquete *paq, char direccion);
 void token_descubrimiento(struct paquete *paq, char direccion);
@@ -30,6 +31,8 @@ void token_limpieza(struct paquete *paq, char direccion);
 void ack_disponible(struct paquete *paq, char destino);
 void token_disponibilidad(struct paquete *paq, char destino);
 
+//void token_inicio(struct paquete *paq,int cantidad);
+void token_inicio(struct paquete *paq, char cantidad);
 
 
 //Variables del nodo
@@ -38,9 +41,12 @@ char direccion;
 int nodos=0;
 bool ping=false;
 
+char recibido [117];
+int partes=0;
+
 //Variables de puertos
-char port_name[128] = "\\\\.\\COM4";    // Puerto de  L E C T U R A
-char port_name2[128] = "\\\\.\\COM1";     // Puerto de E S C R I T U R A
+char port_name[128] = "\\\\.\\COM2";    // Puerto de  L E C T U R A
+char port_name2[128] = "\\\\.\\COM4";     // Puerto de E S C R I T U R A
 
 
 using namespace std;
@@ -135,12 +141,28 @@ int main(int argc, char **argv) {
 	char cBytes[16];
 	paquete message;
     int m;
-    
+    int corte=0;
+    int partes_enviar=0;
+    int contador=0;
     /////////////////////////
     
+    /////// M E N U
+    	system("cls");
+    	
+		printf(" M E N U    G E N E R A L \n");
+    	printf("1.- Validar red \n");
+	    printf("2.- Descubrir nodos \n");
+	    printf("3.- Ping a nodo \n");
+	    printf("4.- Envio de texto \n");
+	    printf("5.- Borrar configuracion \n");        
+    	
+    	
+    	//////// M E N U
+    
     /// C I C L O   P R I N C I P A L
+    printf("Preciona cualquier cosa para entrar al menu \n");
     do {
-        
+	    	    	    	        
         //Lectura de paquetes
         ReadFile( file, buffer, sizeof(buffer), &read, NULL );
         
@@ -152,12 +174,27 @@ int main(int argc, char **argv) {
             
             //Dar respuesta al paquete
             respuesta(message);
-            
+            printf("Preciona para continuar \n");
         }
         
         
         ///////
+        
         if ( kbhit() ) {
+        	ch = getch();
+        	//menuu
+        	
+        	system("cls");			    	    	    	
+			printf(" M E N U    G E N E R A L \n");
+	    	printf("1.- Validar red \n");
+	        printf("2.- Descubrir nodos \n");
+	        printf("3.- Ping a nodo \n");
+	        printf("4.- Envio de texto \n");
+	        printf("5.- Borrar configuracion \n");        
+	        
+	        printf("Indica la opcion: \n");
+	        
+	        //menuu
             ch = getch();
             switch (ch)
          	{
@@ -323,7 +360,63 @@ int main(int argc, char **argv) {
                     CloseHandle(file2);  //Cierra la escritura
                     
                     
+                    break;
                     
+                case 54:
+                	// Escritura y envio de texto MAXIMO 13 BYTES
+                	printf("Envio de texto \n");
+                	printf("Max 200 caracteres \n");
+                	  
+					  char cadena [117];
+					  printf ("Introduzca una cadena: ");
+					  fgets (cadena, 117, stdin);
+					  printf ("La cadena leida es: %s \n", cadena);
+					  printf ("Lectura \n");
+					  corte=0;
+					  contador=0;
+					  partes_enviar=1;
+					  while((corte<117)&&(cadena[corte]!='\n')){					  		
+					  		printf("%c",cadena[corte]);
+					  		if(contador==12){
+					  			printf("\n");
+					  			partes_enviar=partes_enviar+1;
+					  			contador=0;
+							  }
+							contador=contador+1;  
+					  		corte=corte+1;
+					  }
+					  limpiar(cadena);
+                	///////////77
+                	file2 = CreateFile( port_name2,
+                                       GENERIC_READ | GENERIC_WRITE,
+                                       0,
+                                       NULL,
+                                       OPEN_EXISTING,
+                                       FILE_ATTRIBUTE_NORMAL,
+                                       NULL
+                                       );
+                    
+                    //Creaci—n de token de validaci—n
+                    
+                    paquete paq5;
+                    token_inicio(&paq5 ,partes_enviar);
+                    memcpy(cBytes, &paq5, sizeof(paq5));
+                    
+                    
+                    //Envia el paquete
+                    
+                    WriteFile( file2,
+                              cBytes, //cBytes, //bytes_a_enviar,
+                              16,//tam_img, //sizeof(cBytes), //(bytes_a_enviar),
+                              &written,
+                              NULL);
+					
+                    
+					
+                    CloseHandle(file2);  //Cierra la escritura
+					
+                	
+                	//////
 					break;
                     
             	default:
@@ -612,10 +705,40 @@ void respuesta(struct paquete message){
             }
             
             break;
-            
+		
+		//Recibir texto			                        
+		
+        case 'a':
+        		printf("Inicio de lectura \n");
+        		printf("%i",message.contenido[0]);
+        		partes = message.contenido[0];
+        		 printf("Resultado %i",partes);
+            break;
+                                    
             
         default:
             printf("No identificado");
             break;
     }
 }
+
+//E N V I O   D E    T E X T O
+
+//limpiar cadena
+void limpiar (char *cadena)
+{
+  char *p;
+  p = strchr (cadena, '\n');
+  if (p)
+    *p = '\0';
+}
+
+//Token de inicio
+//void token_publicacion(struct paquete *paq, char cantidad){
+void token_inicio(struct paquete *paq, char cantidad){    
+    paq->tipo= 'a';
+    paq->org= direccion;
+    paq->dest= direccion;
+    strcpy(paq->contenido, &cantidad);
+}
+

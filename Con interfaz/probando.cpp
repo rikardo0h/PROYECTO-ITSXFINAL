@@ -99,7 +99,7 @@ int main(int argc, char **argv) {
 									    
 					if ( !GetCommState(file2, &port2))
 					        system_error("getting comm state");
-					    if (!BuildCommDCB("baud=19200 parity=n data=8 stop=1", &port2))
+					    if (!BuildCommDCB("baud=9600 parity=n data=8 stop=1", &port2))
 					        system_error("building comm DCB");
 					    if (!SetCommState(file2, &port2))
 					        system_error("adjusting port settings");
@@ -111,6 +111,23 @@ int main(int argc, char **argv) {
 					    timeouts2.WriteTotalTimeoutMultiplier = 1;
 					    timeouts2.WriteTotalTimeoutConstant = 1;
 					    
+				    if (!SetCommTimeouts(file2, &timeouts))
+        system_error("setting port time-outs.");
+    
+    // set keyboard to raw reading.
+    if (!GetConsoleMode(keyboard, &mode))
+        system_error("getting keyboard mode");
+    mode &= ~ ENABLE_PROCESSED_INPUT;
+    if (!SetConsoleMode(keyboard, mode))
+        system_error("setting keyboard mode");
+    
+    if (!EscapeCommFunction(file2, CLRDTR))
+        system_error("clearing DTR");
+    Sleep(200);
+    if (!EscapeCommFunction(file2, SETDTR))
+        system_error("setting DTR");
+    
+    				    
 				    
 				    
     /////////
@@ -460,17 +477,12 @@ bool propietario(char destino){
 void reenvio_paquete(struct paquete paq){
     
     
-    memcpy(cBytes, &paq, sizeof(paq));
-        
-    //Envia el paquete
-    
+    memcpy(cBytes, &paq, sizeof(paq));            
     WriteFile( file2,
               cBytes, //cBytes, //bytes_a_enviar,
               16,//tam_img, //sizeof(cBytes), //(bytes_a_enviar),
               &written2,
-              NULL);
-            
-    
+              NULL);                
 }
 
 

@@ -151,6 +151,7 @@ int main(int argc, char **argv) {
     }
     // get the current DCB, and adjust a few bits to our liking.
     
+    
     memset(&port, 0, sizeof(port));
     port.DCBlength = sizeof(port);
     if ( !GetCommState(file, &port))

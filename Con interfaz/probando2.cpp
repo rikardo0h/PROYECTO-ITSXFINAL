@@ -114,6 +114,7 @@ int main(int argc, char **argv) {
 				    if (!SetCommTimeouts(file2, &timeouts))
         system_error("setting port time-outs.");
     
+    
     // set keyboard to raw reading.
     if (!GetConsoleMode(keyboard, &mode))
         system_error("getting keyboard mode");

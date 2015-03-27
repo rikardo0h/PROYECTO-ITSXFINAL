@@ -48,7 +48,7 @@ char recibido [117];
 int partes=0;
 
 //Variables de puertos
-char port_name[128] = "\\\\.\\COM2";    // Puerto de  L E C T U R A
+char port_name[128] = "\\\\.\\COM4";    // Puerto de  L E C T U R A
 char port_name2[128] = "\\\\.\\COM3";     // Puerto de E S C R I T U R A
 
 
@@ -92,6 +92,7 @@ int main(int argc, char **argv) {
         return 1;
     }
     // get the current DCB, and adjust a few bits to our liking.
+    
     memset(&port, 0, sizeof(port));
     port.DCBlength = sizeof(port);
     if ( !GetCommState(file, &port))
@@ -150,19 +151,19 @@ int main(int argc, char **argv) {
     char to;
     bool entre;
     int aux,ay;
+    DCB port2;
+    COMMTIMEOUTS timeouts2;
     /////////////////////////
     
     /////// M E N U
-    	system("cls");
-    	
+    	system("cls");    	
 		printf(" M E N U    G E N E R A L \n");
 	    	printf("1.- Token de validacion \n");
 	        printf("2.- Token de descubrimiento \n");
 	        printf("3.- Consulta de tabla \n");
 	        printf("4.- Limpieza \n");
 	        printf("5.- Disponibilidad \n");        
-	        printf("6.- Envio de texto \n");        
-    	
+	        printf("6.- Envio de texto \n");            	
     	//////// M E N U
     
     /// C I C L O   P R I N C I P A L
@@ -215,8 +216,31 @@ int main(int argc, char **argv) {
                                        FILE_ATTRIBUTE_NORMAL,
                                        NULL
                                        );
-                    
+    
+					
+				    memset(&port2, 0, sizeof(port2));
+				    port2.DCBlength = sizeof(port2);                
+				        
+									    
+					if ( !GetCommState(file2, &port2))
+					        system_error("getting comm state");
+					    if (!BuildCommDCB("baud=19200 parity=n data=8 stop=1", &port2))
+					        system_error("building comm DCB");
+					    if (!SetCommState(file2, &port2))
+					        system_error("adjusting port settings");
+					    
+					    // set short timeouts on the comm port.
+					    timeouts2.ReadIntervalTimeout = 1;
+					    timeouts2.ReadTotalTimeoutMultiplier = 1;
+					    timeouts2.ReadTotalTimeoutConstant = 1;
+					    timeouts2.WriteTotalTimeoutMultiplier = 1;
+					    timeouts2.WriteTotalTimeoutConstant = 1;
+					    
+				    
+				    
+				    
                     //Creación de token de validación
+                    
                     
                     paquete paq;
                     direccion = 'a';
@@ -243,6 +267,8 @@ int main(int argc, char **argv) {
             	case 50:
             		printf("Token descubrimiento \n");
             		
+            		
+            		
                     
                     file2 = CreateFile( port_name2,
                                        GENERIC_READ | GENERIC_WRITE,
@@ -252,6 +278,24 @@ int main(int argc, char **argv) {
                                        FILE_ATTRIBUTE_NORMAL,
                                        NULL
                                        );
+                    
+                    memset(&port2, 0, sizeof(port2));
+				    port2.DCBlength = sizeof(port2);                
+				        
+									    
+					if ( !GetCommState(file2, &port2))
+					        system_error("getting comm state");
+					    if (!BuildCommDCB("baud=19200 parity=n data=8 stop=1", &port2))
+					        system_error("building comm DCB");
+					    if (!SetCommState(file2, &port2))
+					        system_error("adjusting port settings");
+					    
+					    // set short timeouts on the comm port.
+					    timeouts2.ReadIntervalTimeout = 1;
+					    timeouts2.ReadTotalTimeoutMultiplier = 1;
+					    timeouts2.ReadTotalTimeoutConstant = 1;
+					    timeouts2.WriteTotalTimeoutMultiplier = 1;
+					    timeouts2.WriteTotalTimeoutConstant = 1;
                     
                     //Creación de token de validación
                     
@@ -305,6 +349,24 @@ int main(int argc, char **argv) {
                                        NULL
                                        );
                     
+                    memset(&port2, 0, sizeof(port2));
+				    port2.DCBlength = sizeof(port2);                
+				        
+									    
+					if ( !GetCommState(file2, &port2))
+					        system_error("getting comm state");
+					    if (!BuildCommDCB("baud=19200 parity=n data=8 stop=1", &port2))
+					        system_error("building comm DCB");
+					    if (!SetCommState(file2, &port2))
+					        system_error("adjusting port settings");
+					    
+					    // set short timeouts on the comm port.
+					    timeouts2.ReadIntervalTimeout = 1;
+					    timeouts2.ReadTotalTimeoutMultiplier = 1;
+					    timeouts2.ReadTotalTimeoutConstant = 1;
+					    timeouts2.WriteTotalTimeoutMultiplier = 1;
+					    timeouts2.WriteTotalTimeoutConstant = 1;
+                    
                     //Creación de token de validación
                     
                     paquete paq3;
@@ -349,7 +411,26 @@ int main(int argc, char **argv) {
                                        NULL
                                        );
                     
-                    //Creación de token de validación
+                    memset(&port2, 0, sizeof(port2));
+				    port2.DCBlength = sizeof(port2);                
+				        
+									    
+					if ( !GetCommState(file2, &port2))
+					        system_error("getting comm state");
+					    if (!BuildCommDCB("baud=19200 parity=n data=8 stop=1", &port2))
+					        system_error("building comm DCB");
+					    if (!SetCommState(file2, &port2))
+					        system_error("adjusting port settings");
+					    
+					    // set short timeouts on the comm port.
+					    timeouts2.ReadIntervalTimeout = 1;
+					    timeouts2.ReadTotalTimeoutMultiplier = 1;
+					    timeouts2.ReadTotalTimeoutConstant = 1;
+					    timeouts2.WriteTotalTimeoutMultiplier = 1;
+					    timeouts2.WriteTotalTimeoutConstant = 1;
+					    
+					//Creación de token de validación
+                                        
                     
                     paquete paq4;
                     //to = getchar();
@@ -450,6 +531,10 @@ void reenvio_paquete(struct paquete paq){
     DWORD read2, written2;
     char cBytes[16];
     HANDLE file2;
+    
+    DCB port3;
+    COMMTIMEOUTS timeouts3;
+    
     file2 = CreateFile( port_name2,
                        GENERIC_READ | GENERIC_WRITE,
                        0,
@@ -459,7 +544,26 @@ void reenvio_paquete(struct paquete paq){
                        NULL
                        );
     
-    //Creación de token de validación
+    /////
+    				memset(&port3, 0, sizeof(port3));
+				    port3.DCBlength = sizeof(port3);                
+				        
+									    
+					if ( !GetCommState(file2, &port3))
+					        system_error("getting comm state");
+					    if (!BuildCommDCB("baud=19200 parity=n data=8 stop=1", &port3))
+					        system_error("building comm DCB");
+					    if (!SetCommState(file2, &port3))
+					        system_error("adjusting port settings");
+					    
+					    // set short timeouts on the comm port.
+					    timeouts3.ReadIntervalTimeout = 1;
+					    timeouts3.ReadTotalTimeoutMultiplier = 1;
+					    timeouts3.ReadTotalTimeoutConstant = 1;
+					    timeouts3.WriteTotalTimeoutMultiplier = 1;
+					    timeouts3.WriteTotalTimeoutConstant = 1;
+    
+	//Creación de token de validación
     
     memcpy(cBytes, &paq, sizeof(paq));
         
@@ -795,8 +899,10 @@ void dividir_texto(char cCadLarga[],char destino){
 	DWORD read2, written2;
     char cBytes[16];
     HANDLE file2;
-    
-	paquete paq5;                    
+    DCB port3;
+    COMMTIMEOUTS timeouts3;    
+	paquete paq5;          
+	          
        	file2 = CreateFile( port_name2,GENERIC_READ | GENERIC_WRITE,0,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);								  						
 		
 
@@ -817,6 +923,23 @@ void dividir_texto(char cCadLarga[],char destino){
 	printf("Tamanio de cCadLarga :%i\n Tamanio de cTemporal :%i\n", strlen(cCadLarga), strlen(cTemporal));
 	//Creamos for que va avanzando de 3 en 3  hasta llegar al tama√±o de cCadLarga
 	
+					memset(&port3, 0, sizeof(port3));
+				    port3.DCBlength = sizeof(port3);                
+				        
+									    
+					if ( !GetCommState(file2, &port3))
+					        system_error("getting comm state");
+					    if (!BuildCommDCB("baud=19200 parity=n data=8 stop=1", &port3))
+					        system_error("building comm DCB");
+					    if (!SetCommState(file2, &port3))
+					        system_error("adjusting port settings");
+					    
+					    // set short timeouts on the comm port.
+					    timeouts3.ReadIntervalTimeout = 1;
+					    timeouts3.ReadTotalTimeoutMultiplier = 1;
+					    timeouts3.ReadTotalTimeoutConstant = 1;
+					    timeouts3.WriteTotalTimeoutMultiplier = 1;
+					    timeouts3.WriteTotalTimeoutConstant = 1;
     
 	///Envio de cuentas partes
 		token_inicio(&paq5 ,destino, contador);
@@ -838,7 +961,7 @@ void dividir_texto(char cCadLarga[],char destino){
 		//	printf("%c",cTemporal[y]);
 		//}
 		
-		paquete_texto(&paq5 ,destino, "ABCDEF");
+		paquete_texto(&paq5 ,destino, cTemporal);
 		memcpy(cBytes, &paq5, sizeof(paq5));                    
 		WriteFile( file2, cBytes, 16,&written2,NULL);
 						

@@ -428,7 +428,6 @@ int main(int argc, char **argv) {
 					    timeouts2.ReadTotalTimeoutConstant = 1;
 					    timeouts2.WriteTotalTimeoutMultiplier = 1;
 					    timeouts2.WriteTotalTimeoutConstant = 1;
-					    
 					//Creación de token de validación
                                         
                     
@@ -527,14 +526,12 @@ bool propietario(char destino){
 
 // Función de envio de paquete independiente
 void reenvio_paquete(struct paquete paq){
+    DCB port2;
+    COMMTIMEOUTS timeouts2;
     
     DWORD read2, written2;
     char cBytes[16];
     HANDLE file2;
-    
-    DCB port3;
-    COMMTIMEOUTS timeouts3;
-    
     file2 = CreateFile( port_name2,
                        GENERIC_READ | GENERIC_WRITE,
                        0,
@@ -544,26 +541,22 @@ void reenvio_paquete(struct paquete paq){
                        NULL
                        );
     
-    /////
-    				memset(&port3, 0, sizeof(port3));
-				    port3.DCBlength = sizeof(port3);                
+    //Creación de token de validación
+    memset(&port2, 0, sizeof(port2));
+	port2.DCBlength = sizeof(port2); 
+    
+    			    memset(&port2, 0, sizeof(port2));
+				    port2.DCBlength = sizeof(port2);                
 				        
 									    
-					if ( !GetCommState(file2, &port3))
+					if ( !GetCommState(file2, &port2))
 					        system_error("getting comm state");
-					    if (!BuildCommDCB("baud=19200 parity=n data=8 stop=1", &port3))
+					    if (!BuildCommDCB("baud=19200 parity=n data=8 stop=1", &port2))
 					        system_error("building comm DCB");
-					    if (!SetCommState(file2, &port3))
+					    if (!SetCommState(file2, &port2))
 					        system_error("adjusting port settings");
-					    
-					    // set short timeouts on the comm port.
-					    timeouts3.ReadIntervalTimeout = 1;
-					    timeouts3.ReadTotalTimeoutMultiplier = 1;
-					    timeouts3.ReadTotalTimeoutConstant = 1;
-					    timeouts3.WriteTotalTimeoutMultiplier = 1;
-					    timeouts3.WriteTotalTimeoutConstant = 1;
+					        
     
-	//Creación de token de validación
     
     memcpy(cBytes, &paq, sizeof(paq));
         
@@ -899,10 +892,8 @@ void dividir_texto(char cCadLarga[],char destino){
 	DWORD read2, written2;
     char cBytes[16];
     HANDLE file2;
-    DCB port3;
-    COMMTIMEOUTS timeouts3;    
-	paquete paq5;          
-	          
+    
+	paquete paq5;                    
        	file2 = CreateFile( port_name2,GENERIC_READ | GENERIC_WRITE,0,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);								  						
 		
 
@@ -923,23 +914,6 @@ void dividir_texto(char cCadLarga[],char destino){
 	printf("Tamanio de cCadLarga :%i\n Tamanio de cTemporal :%i\n", strlen(cCadLarga), strlen(cTemporal));
 	//Creamos for que va avanzando de 3 en 3  hasta llegar al tama√±o de cCadLarga
 	
-					memset(&port3, 0, sizeof(port3));
-				    port3.DCBlength = sizeof(port3);                
-				        
-									    
-					if ( !GetCommState(file2, &port3))
-					        system_error("getting comm state");
-					    if (!BuildCommDCB("baud=19200 parity=n data=8 stop=1", &port3))
-					        system_error("building comm DCB");
-					    if (!SetCommState(file2, &port3))
-					        system_error("adjusting port settings");
-					    
-					    // set short timeouts on the comm port.
-					    timeouts3.ReadIntervalTimeout = 1;
-					    timeouts3.ReadTotalTimeoutMultiplier = 1;
-					    timeouts3.ReadTotalTimeoutConstant = 1;
-					    timeouts3.WriteTotalTimeoutMultiplier = 1;
-					    timeouts3.WriteTotalTimeoutConstant = 1;
     
 	///Envio de cuentas partes
 		token_inicio(&paq5 ,destino, contador);

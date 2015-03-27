@@ -1,3 +1,4 @@
+//ARCHIVO FINALL
 #include <stdio.h>
 #include <conio.h>
 #include <string.h>
@@ -837,9 +838,9 @@ void dividir_texto(char cCadLarga[],char destino){
 		//	printf("%c",cTemporal[y]);
 		//}
 		
-		//paquete_texto(&paq5 ,destino, "ABCDEF");
-		//memcpy(cBytes, &paq5, sizeof(paq5));                    
-		//WriteFile( file2, cBytes, 16,&written2,NULL);
+		paquete_texto(&paq5 ,destino, "ABCDEF");
+		memcpy(cBytes, &paq5, sizeof(paq5));                    
+		WriteFile( file2, cBytes, 16,&written2,NULL);
 						
 	}
 					

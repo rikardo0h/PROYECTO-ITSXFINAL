@@ -48,8 +48,8 @@ char recibido [117];
 int partes=0;
 
 //Variables de puertos
-char port_name[128] = "\\\\.\\COM2";    // Puerto de  L E C T U R A
-char port_name2[128] = "\\\\.\\COM5";     // Puerto de E S C R I T U R A
+char port_name[128] = "\\\\.\\COM4";    // Puerto de  L E C T U R A
+char port_name2[128] = "\\\\.\\COM3";     // Puerto de E S C R I T U R A
 
 
 /// VARIABLES DE ESCRITURA
@@ -155,7 +155,7 @@ int main(int argc, char **argv) {
     port.DCBlength = sizeof(port);
     if ( !GetCommState(file, &port))
         system_error("getting comm state");
-    if (!BuildCommDCB("baud=19200 parity=n data=8 stop=1", &port))
+    if (!BuildCommDCB("baud=9600 parity=n data=8 stop=1", &port))
         system_error("building comm DCB");
     if (!SetCommState(file, &port))
         system_error("adjusting port settings");

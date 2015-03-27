@@ -32,6 +32,7 @@ void ack_disponible(struct paquete *paq, char destino);
 void token_disponibilidad(struct paquete *paq, char destino);
 
 //void token_inicio(struct paquete *paq,int cantidad);
+void dividir_texto(char cCadLarga[],char destino);
 void token_inicio(struct paquete *paq,char destino, char cantidad);
 void paquete_texto(struct paquete *paq,char destino, char parte[]);
 
@@ -371,8 +372,7 @@ int main(int argc, char **argv) {
 					  char cadena [117];
 					  char paq_parte [13];
 					  
-					  memset(cadena, 0, 117);
-					(cadena, 0, 117);  	
+					  limpiar(cadena);
 					
 					  printf ("Introduzca una cadena: ");
 					  fgets (cadena, 117, stdin);
@@ -382,122 +382,9 @@ int main(int argc, char **argv) {
 					  
                     printf("Para: ");                    
                     while (((to = getchar()) != '\n' && to != EOF)&&(ch=to));
-                    printf("Para: %c ",ch);
-                    
-                    paquete paq5;
-                    
-                	file2 = CreateFile( port_name2,
-                                       GENERIC_READ | GENERIC_WRITE,
-                                       0,
-                                       NULL,
-                                       OPEN_EXISTING,
-                                       FILE_ATTRIBUTE_NORMAL,
-                                       NULL
-                                       );
-                    
-					  //////////
-					  						  			
-					//Ccantidad d paquetes
-					  contador=0;
-					  corte=0;
-					  	//printf ("_D_D_D_D_D \n ");
-					  	entre=false;
-					  for(int aux=0; cadena[aux]!='\n';aux++,corte++){					  						  	
-					  	   if(corte<13){
-					  //	   		printf("%c",cadena[corte]);					  								  			
-					  	   		entre=true;
-							 }
-							 if(corte==13){
-							 	contador++;
-						//	 	printf ("\n");
-							 	corte=0;
-								 aux--;							 		
-								 entre=false;
-							} 
-					  }
-					  if(entre){
-					  	contador++;
-					  }
-					  
+                    printf("Para: %c \n",ch);                                      
+                    dividir_texto(cadena,ch);
 
-						printf ("\n SE ENVIARAN  %i  paquetes \n", contador );		
-						  						
-					  ///Envio de cuentas partes
-						token_inicio(&paq5 ,ch, contador);
-	                	memcpy(cBytes, &paq5, sizeof(paq5));                    
-	                	WriteFile( file2, cBytes, 16,&written,NULL);
-	                	
-					 	////////ENVIO DEL PAQUETE
-						 
-						 //Ccantidad d paquetes
-					contador=0;
-					corte=0;
-					//printf ("VERIFICAR \n ");
-					entre=false;
-					
-					
-					
-					memset(paq_parte, 0, 13);
-					(paq_parte, 0, 13);  	
-					  	
-					  	
-					  for(aux=0; cadena[aux]!='\n';aux++,corte++){					  						  	
-					  	   if(corte<13){					  	   		
-					  	   		//printf("%c",cadena[aux]);					  								  			
-								paq_parte[corte]=cadena[aux];								
-					  	   		entre=true;					  	   							  	   		
-							 }
-							 if(corte==13){
-							 	//Envio
-							 	printf("Palabra %i %s \n",contador,paq_parte);					  								  			
-					  	   		paquete_texto(&paq5 ,ch, paq_parte);
-	                    		memcpy(cBytes, &paq5, sizeof(paq5));                    
-	                    		WriteFile( file2, cBytes, 16,&written,NULL);
-	                
-				                memset(paq_parte, 0, 13);
-								(paq_parte, 0, 13);  	
-	                    		
-	//						 	printf("\n");
-							 	contador++;							 	
-							 	corte=0;
-								aux--;							 		
-								entre=false;
-							} 
-					  }
-					  if(entre){
-					  	//printf("\n hi");
-					  	contador++;
-					  	ay=0;					  	
-					  	while(ay<corte){
-					  		printf("%c \n",paq_parte[ay]);					  								  			
-					  		//paq_parte[corte]=cadena[aux+ay];
-					  		//printf("%c",cadena[aux+ay]);					  								  			
-					  		ay++;
-						  }
-						  //Envio
-						  printf("Palabra %i %s \n",contador,paq_parte);					  								  			
-						  paquete_texto(&paq5 ,ch, paq_parte);
-	                      memcpy(cBytes, &paq5, sizeof(paq5));                    
-	                     WriteFile( file2, cBytes, 16,&written,NULL);
-	                  
-					  }
-					  	
-						  			//paquete_texto(&paq5 ,ch, paq_parte);
-	                    			//memcpy(cBytes, &paq5, sizeof(paq5));                    
-	                    			//WriteFile( file2, cBytes, 16,&written,NULL);
-	                 
-					
-					  
-                	///////////77                	                	                                                            					
-                    
-					
-                    CloseHandle(file2);  //Cierra la escritura					                	
-                    memset(paq_parte, 0, 13);
-					(paq_parte, 0, 13);  	
-					
-                    memset(cadena, 0, 117);
-					(cadena, 0, 117);  	
-                	//////
 					break;
                     
             	default:
@@ -812,6 +699,7 @@ void respuesta(struct paquete message){
         
         //Recibir paquete del texto
         case 'b':
+				/*
         		if (!propietario( message.dest)) {
                 	reenvio_paquete(message);
             	}else{
@@ -822,7 +710,23 @@ void respuesta(struct paquete message){
 					if(partes==0){
 						printf("Terminado \n");	
 					}        		
-				}        		
+				}  */
+				
+				if (propietario(message.dest)) {					                
+					printf("Propio y lo encontre ");
+                	printf("Parte a recibir \n");
+	            	partes = partes-1;
+	            	printf("Faltantes=  %i \n",partes);		        		
+					printf("Paquete:  %s \n ",message.contenido);	
+					if(partes==0){
+						printf("Terminado \n");	
+					}        		
+	            } else {
+	                if (!propietario(message.org)) {
+	                    printf("Desconocio");
+	                    reenvio_paquete(message);
+	                }	                
+	            }			      		
         break;
                                     
             
@@ -859,3 +763,85 @@ void paquete_texto(struct paquete *paq,char destino, char parte[]){
     strcpy(paq->contenido, parte);
 }
 
+void dividir_texto(char cCadLarga[],char destino){
+	
+	///////////////
+	
+	//Ccantidad d paquetes
+	int contador=0;
+	int corte=0;					  	
+	bool entre=false;
+	for(int aux=0; cCadLarga[aux]!='\n';aux++,corte++){					  						  	
+	 	   if(corte<13){					  
+	  	   		entre=true;
+		   }
+		 if(corte==13){
+		 	contador++;						
+			corte=0;
+			aux--;							 		
+			entre=false;
+		} 
+	}
+	if(entre){
+		contador++;
+	}
+					  	
+		
+	printf("Son :  %i  partes \n",contador);				
+	///////////////		
+	
+	///Envio de paquete
+	DWORD read2, written2;
+    char cBytes[16];
+    HANDLE file2;
+    
+	paquete paq5;                    
+       	file2 = CreateFile( port_name2,GENERIC_READ | GENERIC_WRITE,0,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);								  						
+		
+
+	//char cCadLarga[117] = "123456789ABCDEF"; //Declaracion y asignación del arreglo cCadLarga
+	//Apuntador a arreglos de caracteres inicializado con la referencia a cCadLarga
+	char * pCLarga = cCadLarga;
+/* Mostramos el contenido de cCadLarga y el contenido del puntero pCLarga con el 
+	simbolo * para apuntar al cotenido de la memoria */
+	printf("Contenido de cCadena :%s\n Contenido del Apuntador :%c\n", cCadLarga, *pCLarga);
+
+/* Mostramos la direccion de memoria de cCadLarga y la direccion de memoria 
+	del puntero pCLarga con el simbolo * para apuntar al cotenido de la memoria */
+	printf("Referencia a cCadena :%i\n Referencia del Apuntador :%i\n", &cCadLarga, &pCLarga);
+	
+
+	char cTemporal[13]; //Cremos cadena temporal
+	/* Mostrar los tamaños de cCadLarga y cTemporal*/
+	printf("Tamanio de cCadLarga :%i\n Tamanio de cTemporal :%i\n", strlen(cCadLarga), strlen(cTemporal));
+	//Creamos for que va avanzando de 3 en 3  hasta llegar al tamaño de cCadLarga
+	
+    
+	///Envio de cuentas partes
+		token_inicio(&paq5 ,destino, contador);
+	    memcpy(cBytes, &paq5, sizeof(paq5));                    
+	    WriteFile( file2, cBytes, 16,&written2,NULL);
+		
+		
+	
+	for(int i=0; i<strlen(cCadLarga); i+=13)
+	{				
+
+		strncpy(cTemporal, pCLarga,13); //Copiamos del apuntador a la variable cTemporal 3 bytes (caracteres).
+		cTemporal[sizeof(cTemporal)-1]='\0';						
+		pCLarga += 13; // Aumentamos el apuntador en 3 posiciones.
+		printf("%s :: %i bytes \n", cTemporal,sizeof(cTemporal));	//Imprimimos lo copiado a cTemporal
+		
+		//for(int y=0;y<13;y++){
+		//	printf("copiado: ");
+		//	printf("%c",cTemporal[y]);
+		//}
+		
+		//paquete_texto(&paq5 ,destino, "ABCDEF");
+		//memcpy(cBytes, &paq5, sizeof(paq5));                    
+		//WriteFile( file2, cBytes, 16,&written2,NULL);
+						
+	}
+					
+	CloseHandle(file2);  //Cierra la escritura					                	
+}

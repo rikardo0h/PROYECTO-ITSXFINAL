@@ -1,6 +1,11 @@
+//ARCHIVO FINALL
+//PARA AGREGAR MAS COMPUTADORAS SOLO EJECUTE ESTE PROGRAMA 
+// EN DICHA PC CAMBIANDO LOS NOMBRES DE LOS PUERTOS DE LECTURA Y ESCRITURA RESPECTIVAMENTE
+
 #include <stdio.h>
 #include <conio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <string>
 #define STRICT
 #define WIN32_LEAN_AND_MEAN
@@ -9,7 +14,7 @@
 // Estructura de los paquetes y tokens  TAMA„O 16 BYTES
 struct paquete {
     char tipo;              //Tipo de paquete o token
-    char contenido[13];     //Contenido del paquete 13 caracteres
+    char contenido[10];     //Contenido del paquete 11 caracteres
     char org;               //Direccion origen
     char dest;              //Direccion destino
 };
@@ -21,8 +26,10 @@ void system_error(char *name);
 void respuesta(struct paquete message);
 bool propietario(char destino);
 void reenvio_paquete(struct paquete paq);
+void limpiar (char *cadena);
 
 
+//T O K E N S   D E C L A R A D O S
 void token_validacion(struct paquete *paq, char direccion);
 void token_descubrimiento(struct paquete *paq, char direccion);
 void token_publicacion(struct paquete *paq, int cantidad);
@@ -30,6 +37,10 @@ void token_limpieza(struct paquete *paq, char direccion);
 void ack_disponible(struct paquete *paq, char destino);
 void token_disponibilidad(struct paquete *paq, char destino);
 
+// E N V I O    D E   T E X  T O
+void dividir_texto(char cCadLarga[],char destino);
+void token_inicio(struct paquete *paq,char destino, char cantidad);
+void paquete_texto(struct paquete *paq,char destino, char parte[]);
 
 
 //Variables del nodo
@@ -38,9 +49,12 @@ char direccion;
 int nodos=0;
 bool ping=false;
 
+char recibido [90];
+int partes=0;
+
 //Variables de puertos
-char port_name[128] = "\\\\.\\COM4";    // Puerto de  L E C T U R A
-char port_name2[128] = "\\\\.\\COM1";     // Puerto de E S C R I T U R A
+char port_name[128] = "\\\\.\\COM2";    // Puerto de  L E C T U R A
+char port_name2[128] = "\\\\.\\COM3";     // Puerto de E S C R I T U R A
 
 
 using namespace std;
@@ -49,7 +63,7 @@ int main(int argc, char **argv) {
     /////// D E C L A R A C I O N E S     I N I C I A L E S
     
     int ch;
-    char buffer[16];
+    char buffer[13];
     HANDLE file;
     COMMTIMEOUTS timeouts;
     DWORD read, written;
@@ -58,14 +72,11 @@ int main(int argc, char **argv) {
     HANDLE screen = GetStdHandle(STD_OUTPUT_HANDLE);
     DWORD mode;
     char init[] = "";
-    
-    
-    char buffer2[1];
+    char buffer2[13];
     HANDLE file2;
     DWORD read2, written2;
     
-    
-    /////////////////////////
+        
     
     /////////// A B R I R   P U E R T O    DE    L E C T U R A
     
@@ -77,17 +88,18 @@ int main(int argc, char **argv) {
                       0,
                       NULL);
     
-    
+    // V A L I D A C I O N E S   D E L   P U E R to 
     if ( INVALID_HANDLE_VALUE == file) {
         system_error("opening file");
         return 1;
     }
     // get the current DCB, and adjust a few bits to our liking.
+    
     memset(&port, 0, sizeof(port));
     port.DCBlength = sizeof(port);
     if ( !GetCommState(file, &port))
         system_error("getting comm state");
-    if (!BuildCommDCB("baud=19200 parity=n data=8 stop=1", &port))
+    if (!BuildCommDCB("baud=9600 parity=n data=8 stop=1", &port))
         system_error("building comm DCB");
     if (!SetCommState(file, &port))
         system_error("adjusting port settings");
@@ -132,33 +144,74 @@ int main(int argc, char **argv) {
     int destino=0;
     bool propietario= false;
 	int ax=0;
-	char cBytes[16];
+	char cBytes[13];
 	paquete message;
     int m;
-    
+    int corte=0;
+    int partes_enviar=0;
+    int contador=0;
+    char to;
+    bool entre;
+    int aux,ay;
+    DCB port2;
+    COMMTIMEOUTS timeouts2;
     /////////////////////////
     
+    /////// M E N U
+    	system("cls");    	
+		printf(" M E N U    G E N E R A L \n");
+	    	printf("1.- Token de validacion (Solo oprimir una vez al inicio) \n");
+	        printf("2.- Token de descubrimiento (Solo oprimir una vez despues de la opcion 1) \n");
+	        printf("3.- Consulta de tabla completa de nodos \n");
+	        printf("4.- Limpieza (Debe ser oprimida por un host que no sea el a )\n");
+	        printf("5.- Disponibilidad (ping) \n");        
+	        printf("6.- Envio de texto \n");            	
+	        printf("----------------------------------- \n");            	        	       	
+	        printf("7.- Nodo actual \n");            	   
+	        printf("8.- Estado de la red \n");            	   
+    	//////// M E N U
+    
     /// C I C L O   P R I N C I P A L
+    printf("Preciona cualquier cosa para entrar al menu \n");
     do {
-        
+	    	    	    	        
         //Lectura de paquetes
         ReadFile( file, buffer, sizeof(buffer), &read, NULL );
         
         if(read)      //Si recibio Bytes
         {
-            memcpy(&message, buffer, 16);   //    Recibo el paquete
+            memcpy(&message, buffer, 13);   //    Recibo el paquete
             //Muestra paquete tipo - contenido - origen - destino
         	printf("%c %s %c %c \n", message.tipo , message.contenido ,message.org, message.dest);
             
             //Dar respuesta al paquete
             respuesta(message);
-            
+            printf("Preciona para continuar \n");
         }
+                
+    	///////
         
-        
-        ///////
         if ( kbhit() ) {
-            ch = getch();
+        	//getch();
+        	//menuu
+        	
+        	system("cls");			    	    	    	
+			printf(" M E N U    G E N E R A L \n");
+	    	printf("1.- Token de validacion (Solo oprimir una vez al inicio) \n");
+	        printf("2.- Token de descubrimiento (Solo oprimir una vez despues de la opcion 1) \n");
+	        printf("3.- Consulta de tabla completa de nodos \n");
+	        printf("4.- Limpieza (Debe ser oprimida por un host que no sea el a )\n");
+	        printf("5.- Disponibilidad (ping) \n");        
+	        printf("6.- Envio de texto \n");            	         
+	        printf("----------------------------------- \n");            	        	       	
+	        printf("7.- Nodo actual \n");            	   
+	        printf("8.- Estado de la red \n");            	   
+	        
+	        printf("Indica la opcion: \n");
+	        
+	        //menuu
+	        while (((to = getchar()) != '\n' && to != EOF)&&(ch=to));
+            //ch = getch();
             switch (ch)
          	{
             	case 49:
@@ -172,24 +225,39 @@ int main(int argc, char **argv) {
                                        FILE_ATTRIBUTE_NORMAL,
                                        NULL
                                        );
-                    
-                    //Creaci—n de token de validaci—n
-                    
+    
+					
+				    memset(&port2, 0, sizeof(port2));
+				    port2.DCBlength = sizeof(port2);                
+				        
+									    
+					if ( !GetCommState(file2, &port2))
+					        system_error("getting comm state");
+					    if (!BuildCommDCB("baud=9600 parity=n data=8 stop=1", &port2))
+					        system_error("building comm DCB");
+					    if (!SetCommState(file2, &port2))
+					        system_error("adjusting port settings");
+					    
+					    // set short timeouts on the comm port.
+					    timeouts2.ReadIntervalTimeout = 1;
+					    timeouts2.ReadTotalTimeoutMultiplier = 1;
+					    timeouts2.ReadTotalTimeoutConstant = 1;
+					    timeouts2.WriteTotalTimeoutMultiplier = 1;
+					    timeouts2.WriteTotalTimeoutConstant = 1;
+						SetCommTimeouts(file2, &timeouts2);
+				    
+                    //Creaci—n de token de validaci—n                    
                     paquete paq;
                     direccion = 'a';
                     token_validacion(&paq ,'a');
-                    memcpy(cBytes, &paq, sizeof(paq));
+                    memcpy(cBytes, &paq, sizeof(paq));                    
                     
-                    
-                    //Envia el paquete
-                    
+                    //Envia el paquete                
                     WriteFile( file2,
                               cBytes, //cBytes, //bytes_a_enviar,
-                              16,//tam_img, //sizeof(cBytes), //(bytes_a_enviar),
+                              13,//tam_img, //sizeof(cBytes), //(bytes_a_enviar),
                               &written,
-                              NULL);
-					
-                    
+                              NULL);					                    
 					
                     CloseHandle(file2);  //Cierra la escritura
                     direccion = 'a';
@@ -199,8 +267,7 @@ int main(int argc, char **argv) {
             		break;
             	case 50:
             		printf("Token descubrimiento \n");
-            		
-                    
+            		            	            		                    
                     file2 = CreateFile( port_name2,
                                        GENERIC_READ | GENERIC_WRITE,
                                        0,
@@ -210,49 +277,56 @@ int main(int argc, char **argv) {
                                        NULL
                                        );
                     
+                    memset(&port2, 0, sizeof(port2));
+				    port2.DCBlength = sizeof(port2);                
+				        
+									    
+					if ( !GetCommState(file2, &port2))
+					        system_error("getting comm state");
+					    if (!BuildCommDCB("baud=9600 parity=n data=8 stop=1", &port2))
+					        system_error("building comm DCB");
+					    if (!SetCommState(file2, &port2))
+					        system_error("adjusting port settings");
+					    
+					    // set short timeouts on the comm port.
+					    timeouts2.ReadIntervalTimeout = 1;
+					    timeouts2.ReadTotalTimeoutMultiplier = 1;
+					    timeouts2.ReadTotalTimeoutConstant = 1;
+					    timeouts2.WriteTotalTimeoutMultiplier = 1;
+					    timeouts2.WriteTotalTimeoutConstant = 1;
+                    	SetCommTimeouts(file2, &timeouts2);
                     //Creaci—n de token de validaci—n
                     
                     paquete paq2;
                     token_descubrimiento(&paq2 ,'a');
                     memcpy(cBytes, &paq2, sizeof(paq2));
-                    
-                    
-                    //Envia el paquete
-                    
+                                        
+                    //Envia el paquete                    
                     WriteFile( file2,
                               cBytes, //cBytes, //bytes_a_enviar,
-                              16,//tam_img, //sizeof(cBytes), //(bytes_a_enviar),
+                              13,//tam_img, //sizeof(cBytes), //(bytes_a_enviar),
                               &written,
-                              NULL);
-					
-                    
-					
+                              NULL);					                    					
                     CloseHandle(file2);  //Cierra la escritura
-					
-                    
-                    
+
             		break;
             	case 51:
                     printf("Consultar tabla \n");
-                    printf("Cantidad de Nodos totales en la red:  %i \n", nodos );
-                    
+                    printf("Cantidad de Nodos totales en la red:  %i \n", nodos );                    
                     m=0;
                     while ( m < nodos) {
                         printf("Equipo %c ", 97+m);
                         if (direccion == 97+m) {
-                            printf("<<<<<  \n ");
+                            printf("<<<<< Actual \n ");
                         }else
                             printf("\n");
                         m=m+1;
                     }
-                    
-                    
+                                    
 					break;
                     
                 case 52:
-                    printf("Limpieza \n");
-                    
-                    
+                    printf("Limpieza \n");                                        
                     file2 = CreateFile( port_name2,
                                        GENERIC_READ | GENERIC_WRITE,
                                        0,
@@ -262,6 +336,23 @@ int main(int argc, char **argv) {
                                        NULL
                                        );
                     
+                    memset(&port2, 0, sizeof(port2));
+				    port2.DCBlength = sizeof(port2);                
+				        // C O N F I G U R A CI O N ES   DEL PUERTO										    
+					if ( !GetCommState(file2, &port2))
+					        system_error("getting comm state");
+					    if (!BuildCommDCB("baud=9600 parity=n data=8 stop=1", &port2))
+					        system_error("building comm DCB");
+					    if (!SetCommState(file2, &port2))
+					        system_error("adjusting port settings");
+					    
+					    // set short timeouts on the comm port.
+					    timeouts2.ReadIntervalTimeout = 1;
+					    timeouts2.ReadTotalTimeoutMultiplier = 1;
+					    timeouts2.ReadTotalTimeoutConstant = 1;
+					    timeouts2.WriteTotalTimeoutMultiplier = 1;
+					    timeouts2.WriteTotalTimeoutConstant = 1;
+                    	SetCommTimeouts(file2, &timeouts2);
                     //Creaci—n de token de validaci—n
                     
                     paquete paq3;
@@ -274,22 +365,22 @@ int main(int argc, char **argv) {
                     
                     WriteFile( file2,
                               cBytes, //cBytes, //bytes_a_enviar,
-                              16,//tam_img, //sizeof(cBytes), //(bytes_a_enviar),
+                              13,//tam_img, //sizeof(cBytes), //(bytes_a_enviar),
                               &written,
-                              NULL);
-					
-                    
+                              NULL);					                    
 					
                     CloseHandle(file2);  //Cierra la escritura
-                    
-                    
+                                        
 					break;
                     
-                case 53:
-                    
+                case 53:                    
                     printf("Token disponibilidad \n");
                     printf("Resultado del ping anterior: %i \n",ping);            		
                     ping=false;
+                    printf("Teclea para quien: ");
+                    
+                    while (((to = getchar()) != '\n' && to != EOF)&&(ch=to));
+                    //printf("Para: %c ",ch);
                     
                     file2 = CreateFile( port_name2,
                                        GENERIC_READ | GENERIC_WRITE,
@@ -300,30 +391,74 @@ int main(int argc, char **argv) {
                                        NULL
                                        );
                     
-                    //Creaci—n de token de validaci—n
+                    memset(&port2, 0, sizeof(port2));
+				    port2.DCBlength = sizeof(port2);                
+				        
+									    
+					if ( !GetCommState(file2, &port2))
+					        system_error("getting comm state");
+					    if (!BuildCommDCB("baud=9600 parity=n data=8 stop=1", &port2))
+					        system_error("building comm DCB");
+					    if (!SetCommState(file2, &port2))
+					        system_error("adjusting port settings");
+					    
+					    // set short timeouts on the comm port.
+					    timeouts2.ReadIntervalTimeout = 1;
+					    timeouts2.ReadTotalTimeoutMultiplier = 1;
+					    timeouts2.ReadTotalTimeoutConstant = 1;
+					    timeouts2.WriteTotalTimeoutMultiplier = 1;
+					    timeouts2.WriteTotalTimeoutConstant = 1;
+					    
+					    SetCommTimeouts(file2, &timeouts2);
+					//Creaci—n de token de validaci—n
+                                        
                     
                     paquete paq4;
-                    
-                    ch = getch();
-                    
+                    //to = getchar();
                     token_disponibilidad(&paq4 ,ch);
+                    printf("Bytes  %i",sizeof(paq4));
                     memcpy(cBytes, &paq4, sizeof(paq4));
-                    
-                    
                     //Envia el paquete
-                    
                     WriteFile( file2,
                               cBytes, //cBytes, //bytes_a_enviar,
-                              16,//tam_img, //sizeof(cBytes), //(bytes_a_enviar),
+                              13,//tam_img, //sizeof(cBytes), //(bytes_a_enviar),
                               &written,
                               NULL);
+					CloseHandle(file2);  //Cierra la escritura
+                    break;
+                    
+                case 54:
+                	// Escritura y envio de texto MAXIMO 11 BYTES
+                	printf("Envio de texto \n");
+                	printf("Max 90 caracteres \n");
+                	  
+					  char cadena [90];
+					  char paq_parte [10];
+					  
+					  limpiar(cadena);
 					
-                    
+					  printf ("Introduzca una cadena: ");
+					  fgets (cadena, 90, stdin);
+					  printf ("La cadena leida es: %s \n", cadena);
+					  					  					  					  					  
+					  
+					  
+                    printf("Teclea el nodo destino: ");                    
+                    while (((to = getchar()) != '\n' && to != EOF)&&(ch=to));
+                    printf("Para: %c \n",ch);                                      
+                    dividir_texto(cadena,ch);
+
+					break;
+				case 55:
+                	printf("Direccion actual es : %c ",direccion);                    
+					break;
 					
-                    CloseHandle(file2);  //Cierra la escritura
-                    
-                    
-                    
+				case 56:
+					if(validado){
+						printf("Estado de la red : CORRECTO");                    	
+					}else{
+						printf("Estado de la red : ERRONEO");                    
+					}                	
 					break;
                     
             	default:
@@ -364,13 +499,10 @@ void system_error(char *name) {
 
 //Creaci—n de token de validaci—n 1
 
-void token_validacion(struct paquete *paq, char direccion){
-    
+void token_validacion(struct paquete *paq, char direccion){    
     paq->tipo= '1';
     paq->org= direccion;
-    paq->dest= direccion;
-    
-    
+    paq->dest= direccion;        
 }
 
 // Propietario del token
@@ -384,9 +516,11 @@ bool propietario(char destino){
 
 // Funci—n de envio de paquete independiente
 void reenvio_paquete(struct paquete paq){
+    DCB port2;
+    COMMTIMEOUTS timeouts2;
     
     DWORD read2, written2;
-    char cBytes[16];
+    char cBytes[13];
     HANDLE file2;
     file2 = CreateFile( port_name2,
                        GENERIC_READ | GENERIC_WRITE,
@@ -398,15 +532,32 @@ void reenvio_paquete(struct paquete paq){
                        );
     
     //Creaci—n de token de validaci—n
-    
+    memset(&port2, 0, sizeof(port2));
+	port2.DCBlength = sizeof(port2); 
+
+				        
+	if ( !GetCommState(file2, &port2))
+		system_error("getting comm state");
+	if (!BuildCommDCB("baud=9600 parity=n data=8 stop=1", &port2))
+		system_error("building comm DCB");
+	if (!SetCommState(file2, &port2))
+		system_error("adjusting port settings");
+					        
+
+// set short timeouts on the comm port.
+    timeouts2.ReadIntervalTimeout = 1;
+    timeouts2.ReadTotalTimeoutMultiplier = 1;
+    timeouts2.ReadTotalTimeoutConstant = 1;
+    timeouts2.WriteTotalTimeoutMultiplier = 1;
+    timeouts2.WriteTotalTimeoutConstant = 1;
+    SetCommTimeouts(file2, &timeouts2);				        					                
     memcpy(cBytes, &paq, sizeof(paq));
-    
-    
+        
     //Envia el paquete
     
     WriteFile( file2,
               cBytes, //cBytes, //bytes_a_enviar,
-              16,//tam_img, //sizeof(cBytes), //(bytes_a_enviar),
+              13,//tam_img, //sizeof(cBytes), //(bytes_a_enviar),
               &written2,
               NULL);
     
@@ -419,13 +570,11 @@ void reenvio_paquete(struct paquete paq){
 
 //Creaci—n de ACK de red validada
 
-void ack_validado (struct paquete *paq){
-    
+void ack_validado (struct paquete *paq){    
     paq->tipo = '9';
     paq->org  = direccion;
     paq->dest = direccion;
-    strcpy(paq->contenido, "1");
-    
+    strcpy(paq->contenido, "1");    
 }
 
 //Creaci—n de token de descubrimiento 2
@@ -441,8 +590,7 @@ void token_descubrimiento(struct paquete *paq, char direccion){
 
 //Creaci—n de token de publicacion 3  7 bytes
 
-void token_publicacion(struct paquete *paq, char cantidad){
-    
+void token_publicacion(struct paquete *paq, char cantidad){    
     paq->tipo= '3';
     paq->org= direccion;
     paq->dest= direccion;
@@ -478,45 +626,39 @@ void ack_disponible(struct paquete *paq, char destino){
 
 // Dar respuesta al paquete de lectura
 void respuesta(struct paquete message){
-    printf("------------ %c --------------- \n", direccion);
-    printf("En la funcion: %c %s %c %c \n", message.tipo , message.contenido ,message.org, message.dest);
-    
+    //printf("------------ %c --------------- \n", direccion);
+    //printf("En la funcion: %c %s %c %c \n", message.tipo , message.contenido ,message.org, message.dest);    
     //Depende del tipo de paquete / token
     switch (message.tipo) {
         case '1': //Token de validaci—n
-            printf("Validacion");
-            
+            //printf("Validacion");            
             if (propietario(message.dest)) {
-                printf("Propio y la red es valida ");
+                //printf("Propio y la red es valida ");
                 validado = true;
-                /// ACK de red Validado
-                
+                /// ACK de red Validado                
                 paquete paq;
                 ack_validado(&paq);
-                reenvio_paquete(paq);
-                
-                
+                reenvio_paquete(paq);                                
                 ///
             } else {
                 //Se pasa al siguiente host el mensaje
-                printf("Desconocio");
+                //printf("Desconocio");
                 strcpy(message.contenido, "reen");
                 reenvio_paquete(message);
-                direccion='\0';
-                
+                direccion='\0';                
             }
             break;
         case '2':
-            printf("Descubrimiento");
-            printf("En el paquete %c",message.contenido[0]);
+            //printf("Descubrimiento");
+            //printf("En el paquete %c",message.contenido[0]);
             // A S I G N A   N O M B R E   AL  N O D O
             if (!propietario( message.dest)) {
                 direccion = message.contenido[0]+1;
-                printf("Direccion asignada %c",direccion);
+              //  printf("Direccion asignada %c",direccion);
                 strcpy(message.contenido, &direccion);
                 reenvio_paquete(message);
             }else{
-                printf("Nodos %i", message.contenido[0]- 96 );
+                //printf("Nodos %i", message.contenido[0]- 96 );
                 nodos = message.contenido[0]- 96;
                 //Token de publicaci—n
                 
@@ -531,49 +673,47 @@ void respuesta(struct paquete message){
             break;
             
         case '3':
-            printf("Token de publicaci—n");
+            //printf("Token de publicaci—n");
             if (!propietario( message.dest)) {
                 nodos = message.contenido[0]- 96;
                 printf("Nodos %i", nodos);
                 reenvio_paquete(message);
             }else{
-                printf("Token de publicaci—n terminado");
-                printf("Nodos %i", nodos);
+              //  printf("Token de publicaci—n terminado");
+              //  printf("Nodos %i", nodos);
             }
             
             break;
             
         case '4':
-            printf("Token disponibilidad");
-            
+            //printf("Token disponibilidad");                         
             if (propietario(message.dest)) {
-                printf("Propio y lo encontre ");
-                /// ACK de host disponible
-                
+              //  printf("Propio y lo encontre ");
+                /// ACK de host disponible                
                 paquete disponible;
                 ack_disponible(&disponible,message.org);
-                reenvio_paquete(disponible);
-                
+                reenvio_paquete(disponible);                
                 ///
             } else {
                 if (!propietario(message.org)) {
-                    printf("Desconocio");
+                //    printf("Desconocio");
                     reenvio_paquete(message);
                 }
                 
             }
+            
             break;
             
         case '5':
-            printf("ACK disponible recibido");
+            //printf("ACK disponible recibido");
             
             if (propietario( message.dest)) {
                 
                 if (message.contenido[0]==49) {
-                    printf("Host encontrado");
+                    printf("Host encontrado \n");
                     ping=true;
                 }else{
-                    printf("No encontrado");
+                    printf("No encontrado \n");
                     ping=false;
                 }
                 
@@ -582,40 +722,173 @@ void respuesta(struct paquete message){
             }
             
             break;
-
-            
-            
+                        
         case '8':
-            printf("Token de limpieza");
+            //printf("Token de limpieza");
             if (!propietario(message.dest)) {
-                printf("No es para mi");
+              //  printf("No es para mi");
                 direccion='\0';
                 reenvio_paquete(message);
             }else{
-                printf("Es para mi");
-                //                direccion='\0';
+                //printf("Es para mi");                
             }
             
             break;
-            
-            
+                        
         case '9':
-            printf("ACK recibido");
+            //printf("ACK recibido");
             if (message.contenido[0]==49) {
-                printf("Red correcta");
+                printf("Red correcta \n ");
                 validado=true;
             }else
-                printf("No correcta");
+                printf("No correcta \n");
             
             if (!propietario( message.dest)) {
                 reenvio_paquete(message);
             }
             
             break;
-            
+		
+		//Recibir texto			                        		
+        case 'a':
+        		if (!propietario( message.dest)) {
+                	reenvio_paquete(message);
+            	}else{
+	            	printf("Inicio de lectura \n");
+	        		//printf("%i",message.contenido[0]);
+	        		partes = message.contenido[0];
+	        		//printf("Faltan %i \n",partes);	
+	        		memset(recibido,'\0',90);
+				}        		
+        break;
+        
+        //Recibir paquete del texto
+        case 'b':				
+				if (propietario(message.dest)) {					                
+				//	printf("Propio y lo encontre ");
+//                	printf("Parte a recibir \n");
+	            	partes = partes-1;
+//	            	printf("Faltantes=  %i \n",partes);		        		
+					//printf("Paquete:  %s \n ",message.contenido);	
+					strcat(recibido,message.contenido);
+					//printf("Paquete ACTUAL:  %s \n ",recibido);
+					if(partes==0){
+						//printf("Terminado \n");	
+						printf("Paquete Completo recibido:  %s \n ",recibido);
+					}        		
+	            } else {
+	                if (!propietario(message.org)) {
+//	                    printf("Desconocio");
+	                    reenvio_paquete(message);
+	                }	                
+	            }			      		
+        break;
+                                    
             
         default:
             printf("No identificado");
             break;
     }
+}
+
+//E N V I O   D E    T E X T O
+
+//limpiar cadena
+void limpiar (char *cadena)
+{
+  char *p;
+  p = strchr (cadena, '\n');
+  if (p)
+    *p = '\0';
+}
+
+//Token de inicio
+//void token_publicacion(struct paquete *paq, char cantidad){
+void token_inicio(struct paquete *paq,char destino, char cantidad){    
+    paq->tipo= 'a';
+    paq->org= direccion;
+    paq->dest= destino;
+    strcpy(paq->contenido, &cantidad);
+}
+
+void paquete_texto(struct paquete *paq,char destino, char parte[]){    
+    paq->tipo= 'b';
+    paq->org= direccion;
+    paq->dest= destino;
+    strcpy(paq->contenido, parte);
+}
+
+void dividir_texto(char cCadLarga[],char destino){		
+	//Ccantidad d paquetes
+	int contador=0;
+	int corte=0;					  	
+	bool entre=false;
+	for(int aux=0; cCadLarga[aux]!='\n';aux++,corte++){					  						  	
+	 	   if(corte<10){					  
+	  	   		entre=true;
+		   }
+		 if(corte==10){
+		 	contador++;						
+			corte=0;
+			aux--;							 		
+			entre=false;
+		} 
+	}
+	if(entre){
+		contador++;
+	}
+					  	
+	///Envio de paquete
+	DWORD read2, written2;
+    char cBytes[13];
+    HANDLE file2;
+    
+      DCB port2;
+    COMMTIMEOUTS timeouts2;
+    
+	paquete paq5;                    
+    file2 = CreateFile( port_name2,GENERIC_READ | GENERIC_WRITE,0,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);								  						
+       	
+    memset(&port2, 0, sizeof(port2));
+	port2.DCBlength = sizeof(port2); 
+
+	if ( !GetCommState(file2, &port2))
+		system_error("getting comm state");
+	if (!BuildCommDCB("baud=9600 parity=n data=8 stop=1", &port2))
+		system_error("building comm DCB");
+	if (!SetCommState(file2, &port2))
+		system_error("adjusting port settings");
+					        
+
+// set short timeouts on the comm port.
+    timeouts2.ReadIntervalTimeout = 1;
+    timeouts2.ReadTotalTimeoutMultiplier = 1;
+    timeouts2.ReadTotalTimeoutConstant = 1;
+    timeouts2.WriteTotalTimeoutMultiplier = 1;
+    timeouts2.WriteTotalTimeoutConstant = 1;
+    SetCommTimeouts(file2, &timeouts2);				        
+					            		
+	
+	//Apuntador a arreglos de caracteres inicializado con la referencia a cCadLarga
+	char * pCLarga = cCadLarga;
+	char cTemporal[10]; //Cremos cadena temporal	
+	///Envio de cuentas partes
+		token_inicio(&paq5 ,destino, contador);
+	    memcpy(cBytes, &paq5, sizeof(paq5));                    
+	    WriteFile( file2, cBytes, 13,&written2,NULL);				
+	
+	for(int i=0; i<strlen(cCadLarga); i+=10)
+	{				
+
+		strncpy(cTemporal, pCLarga,10); //Copiamos del apuntador a la variable cTemporal 3 bytes (caracteres).
+		cTemporal[sizeof(cTemporal)]='\0';						
+		pCLarga += 10; // Aumentamos el apuntador en 3 posiciones.
+		printf("%s :: %i bytes \n", cTemporal,sizeof(cTemporal));	//Imprimimos lo copiado a cTemporal		
+		paquete_texto(&paq5 ,destino, cTemporal);
+		memcpy(cBytes, &paq5, sizeof(paq5));                    
+		WriteFile( file2, cBytes, 13,&written2,NULL);
+						
+	}
+					
+	CloseHandle(file2);  //Cierra la escritura					                	
 }

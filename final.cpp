@@ -37,6 +37,30 @@ void token_limpieza(struct paquete *paq, char direccion);
 void ack_disponible(struct paquete *paq, char destino);
 void token_disponibilidad(struct paquete *paq, char destino);
 
+//EQUIPO TOKENSS
+/*
+ Equipo:
+ 
+ Ricardo Manzanares Avila apple_crox@hotmail.com 127o1430
+ 
+ Gustavo de Jesus Melgarejo Aguila gustavo_melgarejo@hotmail.com 127o1434
+ 
+ Eder Antuan Velasquez Valencia almost69@hotmail.com 127o1481
+
+ 
+ Sergio Lara Guevara sergiolara20@hotmail.com 137O0014
+ 
+ Marcos Olivarez Ortiz sick985@hotmail.com    137O0004
+ 
+ Teodoro Hernandez Hernandez 007lider@gmail.com 127o1412
+ 
+ Irvin Antonio Alvarez Rodriguez  gabacho-2@hotmail.com  137o0038
+ 
+ 
+ */
+
+
+
 // E N V I O    D E   T E X  T O
 void dividir_texto(char cCadLarga[],char destino);
 void token_inicio(struct paquete *paq,char destino, char cantidad);
